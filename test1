@@ -494,7 +494,6 @@ function DisabledDamage()
     end)
 end
 
---fastattackcooldown
 local GlobalEnv = (getgenv or getrenv or getfenv)()
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local PlayersService = game:GetService("Players")
@@ -504,63 +503,6 @@ local Network = GameModules:WaitForChild("Net")
 local CharactersFolder = workspace:WaitForChild("Characters")
 local EnemiesFolder = workspace:WaitForChild("Enemies")
 
--- รายการส่วนของร่างกายสำหรับการโจมตี
-local BodyParts = {
-    { Name = "Head", Weight = 0.1 },
-    { Name = "HumanoidRootPart", Weight = 0.1 },
-    { Name = "UpperTorso", Weight = 0.1 },
-    { Name = "LowerTorso", Weight = 0.1 },
-    { Name = "LeftShoulder", Weight = 0.1 },
-    { Name = "LeftUpperArm", Weight = 0.1 },
-    { Name = "LeftLowerArm", Weight = 0.1 },
-    { Name = "LeftHand", Weight = 0.1 },
-    { Name = "RightShoulder", Weight = 0.1 },
-    { Name = "RightUpperArm", Weight = 0.1 },
-    { Name = "RightLowerArm", Weight = 0.1 },
-    { Name = "RightHand", Weight = 0.1 },
-    { Name = "LeftUpperLeg", Weight = 0.1 },
-    { Name = "LeftLowerLeg", Weight = 0.1 },
-    { Name = "LeftFoot", Weight = 0.1 },
-    { Name = "RightUpperLeg", Weight = 0.1 },
-    { Name = "RightLowerLeg", Weight = 0.1 },
-    { Name = "RightFoot", Weight = 0.1 }
-}
-
--- การตั้งค่า
-local Config = {
-    EnableAutoAttack = true,
-    AttackCooldown = 0, -- เพิ่มช่องว่างเพื่อลด Ping
-    AttackRange = 100,
-    TargetMobs = true,
-    TargetPlayers = true,
-    AttackId = "796ab7c5",
-    SpamRounds = 1 -- ส่ง 1 ครั้งต่อส่วน
-}
-
--- ฟังก์ชันหา RemoteEvent ที่ถูกย้าย
-local function FindDynamicRemote(RemoteName)
-    local Remote = Network:WaitForChild(RemoteName, 5)
-    if not Remote then
-        for _, folder in ipairs({
-            ReplicatedStorage.Util,
-            ReplicatedStorage.Remotes,
-            ReplicatedStorage.Assets,
-            ReplicatedStorage.Common,
-            ReplicatedStorage.FX
-        }) do
-            Remote = folder:FindFirstChild(RemoteName)
-            if Remote then
-                print("Found " .. RemoteName .. " in " .. folder.Name)
-                break
-            end
-        end
-    end
-    if not Remote then
-        warn("Failed to find " .. RemoteName .. " after searching")
-    end
-    return Remote or Network:WaitForChild(RemoteName, 10)
-end
-
 pcall(function()
     local AttackSystem = {
         LastAttackTime = tick()
@@ -569,114 +511,78 @@ pcall(function()
     function AttackSystem.IsTargetAlive(Target)
         if not Target then return false end
         local Humanoid = Target:FindFirstChildOfClass("Humanoid")
-        return Humanoid and Humanoid.Health > 0
+        if Humanoid then
+            return Humanoid.Health > 0
+        end
+        return false
     end
+
+    local Config = {
+        EnableAutoAttack = true
+    }
 
     AttackSystem.FastAttackHandler = (function()
         if GlobalEnv._cached_attack then return GlobalEnv._cached_attack end
 
         local AttackHandler = {
             NextAttackTime = 0,
-            HasAttackedBefore = false
+            AttackRange = 60,
+            TargetMobs = true,
+            TargetPlayers = true
         }
 
-        -- หา RemoteEvent ที่ถูกย้าย
-        local AttackEvent = FindDynamicRemote("RE/RegisterAttack")
-        local HitEvent = FindDynamicRemote("RE/RegisterHit")
+        local AttackEvent = Network:WaitForChild("RE/RegisterAttack")
+        local HitEvent = Network:WaitForChild("RE/RegisterHit")
 
-        if not AttackEvent or not HitEvent then
-            warn("One or more RemoteEvents not found. AutoAttack disabled.")
-            return
-        end
-
-        -- ฟังก์ชันโจมตีเป้าหมาย
-        function AttackHandler:AttackTarget(Target)
-            if not Target or not LocalPlayer.Character then return end
-            local CharacterRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if not CharacterRoot then return end
-
-            AttackEvent:FireServer(AttackCooldown) 
-
-            local hitCount = 0
-            for _, part in ipairs(BodyParts) do
-                local TargetPart = Target:FindFirstChild(part.Name)
-                if TargetPart then
-                    local Distance = LocalPlayer:DistanceFromCharacter(TargetPart.Position)
-                    if Distance <= Config.AttackRange then
-                        for i = 1, Config.SpamRounds do
-                            print("Attacking target: " .. TargetPart.Name .. " at " .. tostring(Distance) .. " units, round " .. i)
-                            HitEvent:FireServer(TargetPart, {}, nil, Config.AttackId)
-                            print("Fired RegisterHit on " .. TargetPart.Name .. " with ID: " .. Config.AttackId .. ", round " .. i)
-                            hitCount = hitCount + 1
-                        end
-                    end
+        function AttackHandler:AttackTarget(TargetRoot, AttackData)
+            if TargetRoot and LocalPlayer:DistanceFromCharacter(TargetRoot.Position) < self.AttackRange then
+                if not self.HasAttackedBefore then
+                    AttackEvent:FireServer(-math.huge)
+                    self.HasAttackedBefore = true
                 end
-            end
-
-            -- เพิ่มการส่งพิเศษเพื่อให้ถึง 34
-            if hitCount < 34 then
-                for i = hitCount + 1, 16 do -- 16 ครั้งพิเศษเพื่อให้ 18 + 16 = 34
-                    local TargetPart = Target:FindFirstChild(BodyParts[math.random(1, #BodyParts)].Name)
-                    if TargetPart and LocalPlayer:DistanceFromCharacter(TargetPart.Position) <= Config.AttackRange then
-                        HitEvent:FireServer(TargetPart, {}, nil, Config.AttackId)
-                    end
-                end
+                HitEvent:FireServer(TargetRoot, AttackData or {}, nil, "796ab7c5")
             end
         end
 
-        -- ค้นหาและโจมตีเป้าหมายที่ใกล้ที่สุด
         function AttackHandler:AttackClosestTarget()
-            if not LocalPlayer.Character or not Config.EnableAutoAttack then return end
-
-            if Config.TargetMobs then
-                local ClosestMob, ClosestDistance = nil, math.huge
-                for _, Mob in ipairs(EnemiesFolder:GetChildren()) do
-                    if AttackSystem.IsTargetAlive(Mob) then
-                        local MobRoot = Mob:FindFirstChild("HumanoidRootPart")
-                        if MobRoot then
-                            local Distance = LocalPlayer:DistanceFromCharacter(MobRoot.Position)
-                            if Distance < ClosestDistance then
-                                ClosestMob = Mob
-                                ClosestDistance = Distance
-                            end
-                        end
+            local TargetData = {nil, {}}
+            for _, Mob in EnemiesFolder:GetChildren() do
+                local MobRootPart = Mob:FindFirstChild("HumanoidRootPart", true)
+                if MobRootPart and LocalPlayer:DistanceFromCharacter(MobRootPart.Position) < self.AttackRange then
+                    if not TargetData[1] then
+                        TargetData[1] = MobRootPart
+                    else
+                        table.insert(TargetData[2], {
+                            [1] = Mob,
+                            [2] = MobRootPart
+                        })
                     end
-                end
-                if ClosestMob and ClosestDistance <= Config.AttackRange then
-                    self:AttackTarget(ClosestMob)
                 end
             end
 
-            if Config.TargetPlayers then
-                for _, Character in ipairs(CharactersFolder:GetChildren()) do
-                    if Character ~= LocalPlayer.Character and AttackSystem.IsTargetAlive(Character) then
-                        local CharacterRoot = Character:FindFirstChild("HumanoidRootPart")
-                        if CharacterRoot then
-                            local Distance = LocalPlayer:DistanceFromCharacter(CharacterRoot.Position)
-                            if Distance <= Config.AttackRange then
-                                self:AttackTarget(Character)
-                            end
-                        end
+            self:AttackTarget(unpack(TargetData))
+
+            for _, Character in CharactersFolder:GetChildren() do
+                if Character ~= LocalPlayer.Character then
+                    local CharacterRootPart = Character:FindFirstChild("HumanoidRootPart")
+                    if CharacterRootPart then
+                        self:AttackTarget(CharacterRootPart)
                     end
                 end
+            end
+
+            if not self.HasAttackedBefore then
             end
         end
 
-        -- ทำการโจมตี
         function AttackHandler:PerformAttack()
-            if tick() >= self.NextAttackTime then
-                local co = coroutine.create(function()
-                    self:AttackClosestTarget()
-                end)
-                coroutine.resume(co)
-                self.NextAttackTime = tick() + Config.AttackCooldown
-            end
+            self:AttackClosestTarget()
+            self.HasAttackedBefore = false
         end
 
         task.spawn(function()
-            while Config.EnableAutoAttack do
+            while task.wait(0) do
                 AttackHandler:PerformAttack()
-                task.wait(0)
             end
         end)
 
@@ -684,6 +590,7 @@ pcall(function()
         return AttackHandler
     end)()
 end)
+
 function Com(com, ...)
 local Remote = game:GetService('ReplicatedStorage').Remotes:FindFirstChild("Comm" .. com)
 if Remote:IsA("RemoteEvent") then
@@ -960,7 +867,7 @@ page15:Label("Join Discord For News\nเข้าดิสคอร์ดเพ�
     game:GetService("StarterGui"):SetCore("SendNotification",{Title = "VectorHub",Text = "คัดลอกเรียบร้อยแล้ว",Icon = "rbxassetid://16129235054",Duration = 3})
 end)
 page1:Seperator("🏠")
-page1:Toggle("AutoFarmLevel\nออโต้ฟาร์มเลเวล cframe  = false", _G.Settings.AutoFarm, function(value)
+page1:Toggle("AutoFarmLevel\nออโต้ฟาร์มเลเวล", _G.Settings.AutoFarm, function(value)
     _G.AutoFarm = value
     _G.Settings.AutoFarm = value
     SaveSettings()
