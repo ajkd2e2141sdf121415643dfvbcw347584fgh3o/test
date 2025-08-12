@@ -719,86 +719,81 @@ end
 end
 end
 
+
 local function toTarget(...)
-local RealtargetPos = { ... }
-local targetPos = RealtargetPos[1]
-local RealTarget
-if type(targetPos) == "vector" then
-RealTarget = CFrame.new(targetPos)
-elseif type(targetPos) == "userdata" then
-RealTarget = targetPos
-elseif type(targetPos) == "number" then
-RealTarget = CFrame.new(unpack(RealtargetPos))
-end
+    local RealtargetPos = { ... }
+    local targetPos = RealtargetPos[1]
+    local RealTarget
+    if typeof(targetPos) == "Vector3" then
+        RealTarget = CFrame.new(targetPos)
+    elseif typeof(targetPos) == "CFrame" then
+        RealTarget = targetPos
+    elseif typeof(targetPos) == "number" then
+        RealTarget = CFrame.new(unpack(RealtargetPos))
+    end
 
-if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health == 0 then
-if tween then tween:Cancel() end
-repeat wait() until game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health > 0; wait(0.2)
-end
+    local HRP = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    local Humanoid = game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
 
-local tweenfunc = {}
-local Distance = (RealTarget.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).Magnitude
-if Distance < 150 then
-    Speed = 1000
-elseif Distance < 250 then
-    Speed = 600
-elseif Distance < 500 then
-    Speed = 350
-elseif Distance < 750 then
-    Speed = 300
-elseif Distance >= 1000 then
-    Speed = 250
-end 
+    -- ตรวจสอบเลือด
+    if Humanoid.Health == 0 then
+        if tween then tween:Cancel() end
+        repeat task.wait() until Humanoid.Health > 0
+        task.wait(0.2)
+    end
 
-if _G.BypassTP then
-if Distance > 3000 and not AutoFarmMaterial and not _G.AutoGodHumanand and not _G.AutoRaids and not (game.Players.LocalPlayer.Backpack:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Character:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game.Players.LocalPlayer.Character:FindFirstChild("God's Chalice") or game.Players.LocalPlayer.Backpack:FindFirstChild("Hallow Essence") or game.Players.LocalPlayer.Character:FindFirstChild("Hallow Essence") or game.Players.LocalPlayer.Character:FindFirstChild("Sweet Chalice") or game.Players.LocalPlayer.Backpack:FindFirstChild("Sweet Chalice")) and not (Name == "Fishman Commando" or Name == "Fishman Warrior") then
-    pcall(function()
-        tween:Cancel()
-        fkwarp = false
+    -- คำนวณ speed ตามระยะ
+    local Distance = (RealTarget.Position - HRP.Position).Magnitude
+    if Distance < 150 then
+        Speed = 1000
+    elseif Distance < 250 then
+        Speed = 600
+    elseif Distance < 500 then
+        Speed = 350
+    elseif Distance < 750 then
+        Speed = 300
+    else
+        Speed = 250
+    end
 
-        if game:GetService("Players")["LocalPlayer"].Data:FindFirstChild("SpawnPoint").Value == tostring(GetIsLand(RealTarget)) then
-            wait(.1)
-            Com("F_", "TeleportToSpawn")
-        elseif game:GetService("Players")["LocalPlayer"].Data:FindFirstChild("LastSpawnPoint").Value == tostring(GetIsLand(RealTarget)) then
-            game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(15)
-            wait(0.1)
-            repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0
+    -- ✅ ทำ movement แบบ incremental เพื่อให้แกน Y ปรับระหว่างทาง
+    local threshold = 50
+    local run = true
+    local conn
+
+    conn = game:GetService("RunService").Heartbeat:Connect(function(dt)
+        if not run then conn:Disconnect() return end
+
+        local DistanceX = math.abs(RealTarget.Position.X - HRP.Position.X)
+        local moveTarget
+
+        if DistanceX > threshold then
+            -- ไกล: คูณ MethodFarm + เพิ่ม Y
+            moveTarget = RealTarget * MethodFarm * CFrame.new(0, RealTarget.Position.Y, 0)
         else
-            if game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 then
-                if fkwarp == false then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = RealTarget
-                end
-                fkwarp = true
-            end
-            wait(.08)
-            game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(15)
-            repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0
-            wait(.1)
-            Com("F_", "SetSpawnPoint")
+            -- ใกล้: MethodFarm ปกติ
+            moveTarget = RealTarget * MethodFarm
         end
-        wait(0.2)
 
-        return
+        -- เดินทางทีละ step
+        local step = Speed * dt
+        local dir = (moveTarget.Position - HRP.Position).Unit
+        HRP.CFrame = HRP.CFrame + dir * math.min(step, (moveTarget.Position - HRP.Position).Magnitude)
+
+        -- หยุดเมื่อถึงเป้าหมาย
+        if (HRP.Position - RealTarget.Position).Magnitude < 3 then
+            run = false
+        end
     end)
-end
-end
 
-local tween_s = game:service "TweenService"
-local info = TweenInfo.new(
-(RealTarget.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position)
-.Magnitude / Speed, Enum.EasingStyle.Linear)
-local tweenw, err = pcall(function()
-tween = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, { CFrame = RealTarget })
-tween:Play()
-end)
-function tweenfunc:Stop()
-tween:Cancel()
-end
-function tweenfunc:Wait()
-tween.Completed:Wait()
-end
-
-return tweenfunc
+    return {
+        Stop = function()
+            run = false
+        end,
+        Wait = function()
+            repeat task.wait() until not run
+        end
+    }
 end
 
 
@@ -958,136 +953,6 @@ page15:Label("Join Discord For News\nเข้าดิสคอร์ดเพ�
     game:GetService("StarterGui"):SetCore("SendNotification",{Title = "VectorHub",Text = "คัดลอกเรียบร้อยแล้ว",Icon = "rbxassetid://16129235054",Duration = 3})
 end)
 page1:Seperator("🏠")
-
-local Method = {"Upper", "Behind", "Below"}
-if _G.Method == nil then
-    _G.Method = "Upper"
-end
-if _G.DistanceAutoFarm == nil then
-    _G.DistanceAutoFarm = 30
-end
-
-page2:Dropdown("Select Method\nเลือกตำแหน่งการฟาร์ม", Method, function(value)
-    _G.Method = value
-end)
-
-page2:Slider("Select Distance\nเลือกระยะการฟาร์ม", 1, 80, 30, function(value)
-    _G.DistanceAutoFarm = value
-end)
-
-local MethodFarm = CFrame.new() -- ตัวแปร global สำหรับ MethodFarm
-
-task.spawn(function()
-    while task.wait(0) do
-        pcall(function()
-            if _G.Method == "Behind" then
-                MethodFarm = CFrame.new(0, 0, _G.DistanceAutoFarm)
-            elseif _G.Method == "Below" then
-                MethodFarm = CFrame.new(0, -_G.DistanceAutoFarm, 0) * CFrame.Angles(math.rad(90), 0, 0)
-            elseif _G.Method == "Upper" then
-                MethodFarm = CFrame.new(0, _G.DistanceAutoFarm, 0) * CFrame.Angles(math.rad(0), 0, 0)
-            else
-                MethodFarm = CFrame.new(0, _G.DistanceAutoFarm, 0)
-            end
-        end)
-    end
-end)
-
-local function toTarget(...)
-    local RealtargetPos = { ... }
-    local targetPos = RealtargetPos[1]
-    local RealTarget
-    if type(targetPos) == "vector" then
-        RealTarget = CFrame.new(targetPos)
-    elseif type(targetPos) == "userdata" then
-        RealTarget = targetPos
-    elseif type(targetPos) == "number" then
-        RealTarget = CFrame.new(unpack(RealtargetPos))
-    end
-
-    if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health == 0 then
-        if tween then tween:Cancel() end
-        repeat wait() until game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health > 0; wait(0.2)
-    end
-
-    local tweenfunc = {}
-    local DistanceX = math.abs(RealTarget.Position.X - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position.X)  -- วัดเฉพาะแกน X
-    local Distance = (RealTarget.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).Magnitude  -- ระยะรวมสำหรับ Speed
-    if Distance < 150 then
-        Speed = 1000
-    elseif Distance < 250 then
-        Speed = 600
-    elseif Distance < 500 then
-        Speed = 350
-    elseif Distance < 750 then
-        Speed = 300
-    elseif Distance >= 1000 then
-        Speed = 250
-    end
-
-    if _G.BypassTP then
-        if Distance > 3000 and not AutoFarmMaterial and not _G.AutoGodHumanand and not _G.AutoRaids and not (game.Players.LocalPlayer.Backpack:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Character:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game.Players.LocalPlayer.Character:FindFirstChild("God's Chalice") or game.Players.LocalPlayer.Backpack:FindFirstChild("Hallow Essence") or game.Players.LocalPlayer.Character:FindFirstChild("Hallow Essence") or game.Players.LocalPlayer.Character:FindFirstChild("Sweet Chalice") or game.Players.LocalPlayer.Backpack:FindFirstChild("Sweet Chalice")) and not (Name == "Fishman Commando" or Name == "Fishman Warrior") then
-            pcall(function()
-                tween:Cancel()
-                fkwarp = false
-
-                if game:GetService("Players")["LocalPlayer"].Data:FindFirstChild("SpawnPoint").Value == tostring(GetIsLand(RealTarget)) then
-                    wait(.1)
-                    Com("F_", "TeleportToSpawn")
-                elseif game:GetService("Players")["LocalPlayer"].Data:FindFirstChild("LastSpawnPoint").Value == tostring(GetIsLand(RealTarget)) then
-                    game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(15)
-                    wait(0.1)
-                    repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0
-                else
-                    if game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 then
-                        if fkwarp == false then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = RealTarget
-                        end
-                        fkwarp = true
-                    end
-                    wait(.08)
-                    game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(15)
-                    repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0
-                    wait(.1)
-                    Com("F_", "SetSpawnPoint")
-                end
-                wait(0.2)
-                return
-            end)
-        end
-    end
-
-    -- ปรับ MethodFarm ตามระยะห่างแกน X
-    local adjustedTarget
-    local threshold = 50  -- ระยะแกน X ที่เมื่อเข้าใกล้แล้วหยุดคูณ Y (ปรับได้ตามต้องการ)
-    if DistanceX > threshold then
-        -- ไกล: คูณแกน Y ด้วย Y ของเป้าหมายเพื่อลอยสูงขึ้น
-        adjustedTarget = RealTarget * MethodFarm * CFrame.new(0, RealTarget.Position.Y, 0)
-    else
-        -- ใกล้: ไม่คูณ Y เพิ่ม, ใช้ MethodFarm ปกติ
-        adjustedTarget = RealTarget * MethodFarm
-    end
-
-    local tween_s = game:service "TweenService"
-    local info = TweenInfo.new(
-        (adjustedTarget.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).Magnitude / Speed,
-        Enum.EasingStyle.Linear
-    )
-    local tweenw, err = pcall(function()
-        tween = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, { CFrame = adjustedTarget })
-        tween:Play()
-    end)
-
-    function tweenfunc:Stop()
-        tween:Cancel()
-    end
-    function tweenfunc:Wait()
-        tween.Completed:Wait()
-    end
-
-    return tweenfunc
-end
-
 page1:Toggle("AutoFarmLevel\nออโต้ฟาร์มเลเวล cframe  = false", _G.Settings.AutoFarm, function(value)
     _G.AutoFarm = value
     _G.Settings.AutoFarm = value
@@ -1759,7 +1624,37 @@ end)
 end
 end)
 
-
+local Method = {"Upper","Behind","Below"}
+if _G.Method == nil then
+_G.Method = "Upper"
+end
+if  _G.DistanceAutoFarm == nil then
+    _G.DistanceAutoFarm = 30
+end
+  
+page2:Dropdown("Select Method\nเลือกตำแหน่งการฟาร์ม",Method, function(value)
+    _G.Method = value
+end)
+    
+page2:Slider("Select Distance\nเลือกระยะการฟาร์ม",1,80,30,function(value)
+ _G.DistanceAutoFarm = value
+end)
+    
+task.spawn(function()
+    while task.wait(0) do
+        pcall(function()
+            if _G.Method == "Behind" then
+                MethodFarm = CFrame.new(0, 0,  _G.DistanceAutoFarm)
+            elseif _G.Method == "Below" then
+                MethodFarm = CFrame.new(0, - _G.DistanceAutoFarm, 0) * CFrame.Angles(math.rad(90), 0, 0)
+            elseif _G.Method == "Upper" then
+                MethodFarm = CFrame.new(0,  _G.DistanceAutoFarm, 0) * CFrame.Angles(math.rad(0), 0, 0)
+            else
+                MethodFarm = CFrame.new(0,  _G.DistanceAutoFarm, 0)
+            end
+        end)
+    end
+end)
 
 page2:Toggle("Auto UseHaki\nออโต้เปิดฮาคิ", true, function(value)
 _G.AutoHaki = value
