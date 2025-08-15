@@ -592,25 +592,7 @@ if player.Character then
 end
 
 -- วิธีที่ 3: ตรวจสอบแบบ Loop (ไม่แนะนำ แต่ใช้ได้)
-spawn(function()
-    while true do
-        wait(1) -- ตรวจสอบทุกวินาที
-        
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            local health = player.Character.Humanoid.Health
-            
-            if health == 0 then
-               smartServerHop()
-                -- เรียกฟังก์ชันย้ายเซิฟที่นี่
-                break -- หยุด loop เมื่อตาย
-            else
-                print("มีชีวิต - HP: " .. health)
-            end
-        else
-            smartServerHop()
-        end
-    end
-end)
+
 ---
 
 if game.PlaceId == 79546208627805 then 
@@ -859,6 +841,25 @@ elseif game.PlaceId == 126509999114328 then
         
         return successCount
     end
+
+    spawn(function()
+    while true do
+        wait(1) -- ตรวจสอบทุกวินาที
+        
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            local health = player.Character.Humanoid.Health
+            
+            if health == 0 then
+               smartServerHop()
+                -- เรียกฟังก์ชันย้ายเซิฟที่นี่
+            else
+                openAllChestsAndCollect()
+            end
+        else
+            smartServerHop()
+        end
+    end
+end)
 
     -- ฟังก์ชันฟาร์มแบบวนลูป
     local function farmLoop()
