@@ -18,7 +18,7 @@ local isRenderingEnabled = true
 
 -- ⚙️ การตั้งค่าระบบ Server Hop ใหม่
 local PlaceID = game.PlaceId
-local MAX_PLAYERS = 8  -- ปรับได้ตามต้องการ
+local MAX_PLAYERS = 5  -- ปรับได้ตามต้องการ
 local SERVER_FILE = "used_servers.json"
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
@@ -335,7 +335,7 @@ end
 local function SmartHop(preferLowPopulation)
     repeat task.wait() until game:IsLoaded() and player
     
-    notify("Server Hop", "🔍 กำลังค้นหาเซิร์ฟ...", 2)
+    notify("Server Hop", " กำลังค้นหาเซิร์ฟ...", 2)
     
     local success, serverData = pcall(function()
         return HttpService:JSONDecode(
@@ -375,7 +375,7 @@ local function SmartHop(preferLowPopulation)
     end
     
     if #goodServers == 0 then
-        notify("No Servers", "❌ ไม่มีเซิร์ฟที่เหมาะสม ใช้ Random Teleport", 3)
+        notify("No Servers", " ไม่มีเซิร์ฟที่เหมาะสม ใช้ Random Teleport", 3)
         pcall(function()
             TeleportService:Teleport(PlaceID, player)
         end)
@@ -404,8 +404,8 @@ local function SmartHop(preferLowPopulation)
     local teleportSuccess = false
     local failConnection = TeleportService.TeleportInitFailed:Connect(function(plr, teleportResult, errorMessage)
         if plr == player then
-            warn("❌ Teleport Failed: " .. tostring(errorMessage))
-            notify("Teleport Failed", "❌ " .. tostring(errorMessage), 3)
+            warn(" Teleport Failed: " .. tostring(errorMessage))
+            notify("Teleport Failed", " " .. tostring(errorMessage), 3)
         end
     end)
     
@@ -420,7 +420,7 @@ local function SmartHop(preferLowPopulation)
     if teleportSuccess then
         print("✅ กำลังย้ายไปเซิร์ฟใหม่...")
     else
-        notify("Backup Teleport", "🔄 ใช้ Random Teleport", 2)
+        notify("Backup Teleport", " ใช้ Random Teleport", 2)
         pcall(function()
             TeleportService:Teleport(PlaceID, player)
         end)
@@ -531,7 +531,7 @@ end
 local function smartServerHop()
     local startTime = tick()
     print("🛡️ เริ่มระบบ Smart Server Hop")
-    notify("Smart Hop", "🛡️ ค้นหาเซิร์ฟที่เหมาะสม", 3)
+    notify("Smart Hop", " ค้นหาเซิร์ฟที่เหมาะสม", 3)
     
     -- ตรวจสอบสถานะผู้เล่นและเก็บ Diamond ก่อนย้าย
     if not checkAndCollectDiamondsBeforeHop() then
@@ -542,7 +542,7 @@ local function smartServerHop()
     SafeHop()
     
     local totalTime = math.floor((tick() - startTime) * 100) / 100
-    print("✅ Smart Server Hop เสร็จสิ้นใน " .. totalTime .. " วินาที!")
+    print(" Smart Server Hop เสร็จสิ้นใน " .. totalTime .. " วินาที!")
     
     return true
 end
@@ -695,6 +695,15 @@ elseif game.PlaceId == 126509999114328 then
     _G.ShowLogs = _G.ShowLogs or true
     _G.UseTeleport = _G.UseTeleport or true
     _G.MaxCycles = _G.MaxCycles or 4
+
+        spawn(function()
+        while true do 
+            wait(60)
+            if _G.FarmChest then
+                SafeHop()
+            end
+        end
+    end)
 
     -- ฟังก์ชัน Teleport ไปหากล่อง
     local function teleportToChest(chest)
