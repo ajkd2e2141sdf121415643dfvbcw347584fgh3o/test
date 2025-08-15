@@ -323,19 +323,11 @@ local function saveUsedServer(serverId)
     end
 end
 
-local function isServerUsed(serverId)
-    local used = loadUsedServers()
-    for _, id in pairs(used) do
-        if id == serverId then return true end
-    end
-    return false
-end
-
--- 🌐 ระบบย้ายเซิร์ฟแบบผสม (Smart Server Hop)
+-- 🌐 ระบบ Smart Server Hop ที่แก้ไขแล้ว
 local function SmartHop(preferLowPopulation)
     repeat task.wait() until game:IsLoaded() and player
     
-    notify("Server Hop", " กำลังค้นหาเซิร์ฟ...", 2)
+    notify("Server Hop", "🔄 กำลังค้นหาเซิร์ฟ...", 2)
     
     local success, serverData = pcall(function()
         return HttpService:JSONDecode(
@@ -355,95 +347,153 @@ local function SmartHop(preferLowPopulation)
     local goodServers = {}
     local currentJobId = game.JobId
     
-    -- กรองเซิร์ฟที่เหมาะสม
+    -- กรองเซิร์ฟที่เหมาะสม (เพิ่ม buffer space)
     for _, server in pairs(serverData.data) do
+        local maxPlayers = server.maxPlayers or 30
+        local currentPlayers = server.playing or 0
+        local availableSlots = maxPlayers - currentPlayers
+        
         local isGoodServer = (
             server.id ~= currentJobId and
-            server.playing >= 1 and  -- มีคนเล่นอย่างน้อย 1 คน
-            server.playing <= (preferLowPopulation and MAX_PLAYERS or server.maxPlayers) and
+            currentPlayers >= 1 and  -- มีคนเล่นอย่างน้อย 1 คน
+            availableSlots >= 2 and  -- เว้นที่ว่างอย่างน้อย 2 ที่
+            currentPlayers <= (preferLowPopulation and MAX_PLAYERS or maxPlayers - 2) and
             not isServerUsed(server.id)
         )
         
         if isGoodServer then
             table.insert(goodServers, {
                 id = server.id,
-                playing = server.playing,
-                maxPlayers = server.maxPlayers,
+                playing = currentPlayers,
+                maxPlayers = maxPlayers,
+                availableSlots = availableSlots,
                 ping = server.ping or 999
             })
         end
     end
     
     if #goodServers == 0 then
-        notify("No Servers", " ไม่มีเซิร์ฟที่เหมาะสม ใช้ Random Teleport", 3)
+        notify("No Servers", "⚠️ ไม่มีเซิร์ฟที่เหมาะสม ใช้ Random Teleport", 3)
         pcall(function()
             TeleportService:Teleport(PlaceID, player)
         end)
         return
     end
     
-    -- เรียงลำดับ: คนน้อย -> ping ต่ำ
+    -- เรียงลำดับ: ที่ว่าง -> คนน้อย -> ping ต่ำ
     table.sort(goodServers, function(a, b)
-        if preferLowPopulation and a.playing ~= b.playing then
+        if a.availableSlots ~= b.availableSlots then
+            return a.availableSlots > b.availableSlots -- เซิร์ฟที่มีที่ว่างมากกว่า
+        elseif preferLowPopulation and a.playing ~= b.playing then
             return a.playing < b.playing
         else
             return a.ping < b.ping
         end
     end)
     
-    -- เลือกเซิร์ฟที่ดีที่สุด
-    local bestServer = goodServers[1]
-    
-    notify("Found Server", 
-           "🎯 " .. bestServer.playing .. "/" .. bestServer.maxPlayers .. " คน", 2)
-    
-    -- บันทึกเซิร์ฟที่ใช้
-    saveUsedServer(bestServer.id)
-    
-    -- Teleport
+    -- ลองหลายเซิร์ฟเผื่อเต็ม
+    local maxAttempts = math.min(3, #goodServers)
     local teleportSuccess = false
-    local failConnection = TeleportService.TeleportInitFailed:Connect(function(plr, teleportResult, errorMessage)
-        if plr == player then
-            warn(" Teleport Failed: " .. tostring(errorMessage))
-            notify("Teleport Failed", " " .. tostring(errorMessage), 3)
+    
+    for attempt = 1, maxAttempts do
+        local targetServer = goodServers[attempt]
+        
+        notify("Found Server " .. attempt, 
+               "🎯 " .. targetServer.playing .. "/" .. targetServer.maxPlayers .. 
+               " (ว่าง: " .. targetServer.availableSlots .. ")", 2)
+        
+        -- ตั้งค่า Teleport Events
+        local teleportConnection
+        local failConnection = TeleportService.TeleportInitFailed:Connect(function(plr, teleportResult, errorMessage)
+            if plr == player then
+                warn("⚠️ Attempt " .. attempt .. " Failed: " .. tostring(errorMessage))
+                if string.find(tostring(errorMessage), "full") or string.find(tostring(errorMessage), "เต็ม") then
+                    notify("Server Full", "🚫 เซิร์ฟเต็ม ลองเซิร์ฟถัดไป...", 2)
+                end
+            end
+        end)
+        
+        -- บันทึกเซิร์ฟที่ใช้ก่อน teleport
+        saveUsedServer(targetServer.id)
+        
+        -- พยายาม Teleport
+        local teleportAttempt = pcall(function()
+            TeleportService:TeleportToPlaceInstance(PlaceID, targetServer.id, player)
+        end)
+        
+        if teleportAttempt then
+            -- รอดูผลลัพธ์
+            local waitTime = 0
+            while waitTime < 5 and not teleportSuccess do
+                task.wait(0.5)
+                waitTime = waitTime + 0.5
+                -- ถ้าเราถูก teleport ไปแล้ว (JobId เปลี่ยน) จะไม่ถึงจุดนี้
+            end
+            
+            -- ถ้าไม่สำเร็จ ลองเซิร์ฟถัดไป
+            print("🔄 ลอง Attempt " .. attempt .. " ล้มเหลว เตรียมลองเซิร์ฟถัดไป...")
         end
-    end)
+        
+        failConnection:Disconnect()
+        
+        -- หยุดลูปถ้าสำเร็จ
+        if teleportSuccess then
+            break
+        end
+        
+        -- รอก่อนลองเซิร์ฟถัดไป
+        if attempt < maxAttempts then
+            task.wait(1)
+        end
+    end
     
-    pcall(function()
-        TeleportService:TeleportToPlaceInstance(PlaceID, bestServer.id, player)
-        teleportSuccess = true
-    end)
-    
-    task.wait(1)
-    failConnection:Disconnect()
-    
-    if teleportSuccess then
-        print("✅ กำลังย้ายไปเซิร์ฟใหม่...")
-    else
-        notify("Backup Teleport", " ใช้ Random Teleport", 2)
+    -- ถ้าทุก attempt ล้มเหลว ใช้ Random Teleport
+    if not teleportSuccess then
+        notify("Fallback", "🎲 ใช้ Random Teleport", 2)
         pcall(function()
             TeleportService:Teleport(PlaceID, player)
         end)
     end
 end
 
--- 🎯 ฟังก์ชันใช้งานง่าย
-local function QuickHop()
-    SmartHop(false)  -- ย้ายเซิร์ฟแบบเร็ว (ไม่สนใจจำนวนคน)
+-- 📡 ฟังก์ชันตรวจสอบสถานะเซิร์ฟก่อน teleport
+local function checkServerStatus(serverId)
+    local success, currentData = pcall(function()
+        return HttpService:JSONDecode(
+            game:HttpGet("https://games.roblox.com/v1/games/" .. PlaceID .. "/servers/Public?sortOrder=Asc&limit=100")
+        )
+    end)
+    
+    if success and currentData and currentData.data then
+        for _, server in pairs(currentData.data) do
+            if server.id == serverId then
+                local availableSlots = (server.maxPlayers or 30) - (server.playing or 0)
+                return availableSlots >= 1, availableSlots
+            end
+        end
+    end
+    
+    return false, 0
 end
 
-local function SafeHop()
-    SmartHop(true)   -- ย้ายเซิร์ฟแบบปลอดภัย (เลือกเซิร์ฟคนน้อย)
-end
-
+-- 🛡️ ปรับปรุง checkAndCollectDiamondsBeforeHop
 local function checkAndCollectDiamondsBeforeHop()
     local diamondCount = 0
     local maxRetries = 3
     local player = game.Players.LocalPlayer
     local name = player.Name
 
-    -- ตรวจสอบว่าผู้เล่นตายหรือไม่โดยเช็คใน workspace.Characters
+    -- ตรวจสอบว่าผู้เล่นตายหรือไม่
     local isDead = false
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        if player.Character.Humanoid.Health <= 0 then
+            isDead = true
+        end
+    else
+        isDead = true
+    end
+
+    -- ตรวจสอบใน workspace.Characters ด้วย
     for _, v in pairs(workspace.Characters:GetChildren()) do
         if string.find(v.Name, name) then
             isDead = true
@@ -452,11 +502,11 @@ local function checkAndCollectDiamondsBeforeHop()
     end
 
     if isDead then
-        print("ตาย")
+        print("💀 ตายแล้ว - ย้ายเซิร์ฟทันที")
         saveUsedServer(game.JobId) -- Blacklist เซิร์ฟเวอร์ปัจจุบัน
-        return false -- ไม่เรียก SafeHop() ในนี้ ปล่อยให้ฟังก์ชันหลักจัดการ
+        return false
     else
-        print("มีชีวิต")
+        print("❤️ ยังมีชีวิต")
     end
 
     -- ดำเนินการเก็บ Diamond ถ้ายังมีชีวิต
@@ -476,25 +526,25 @@ local function checkAndCollectDiamondsBeforeHop()
             StarterGui:SetCore("SendNotification", {
                 Icon = "rbxassetid://16129235054",
                 Title = "Diamond Found!",
-                Text = "พบ Diamond " .. diamondCount .. " อัน กำลังเก็บ...",
+                Text = "💎 พบ Diamond " .. diamondCount .. " อัน",
                 Duration = 3
             })
             
-            local collectedCount = collectDiamonds() or 0 -- ตรวจสอบ nil
+            local collectedCount = collectDiamonds() or 0
             if _G.ShowLogs then
                 print("✅ เก็บ Diamond ได้ " .. collectedCount .. " อัน")
             end
             
-            task.wait(2)
+            task.wait(1) -- ลดเวลารอ
         else
             if _G.ShowLogs then
-                print("✅ ไม่มี Diamond เหลืออยู่ในเซิร์ฟเวอร์")
+                print("✅ ไม่มี Diamond เหลือ")
             end
             break
         end
     end
     
-    -- ตรวจสอบ Diamond อีกครั้งก่อนย้ายเซิร์ฟ
+    -- ตรวจสอบ Diamond สุดท้าย
     diamondCount = 0
     for _, diamond in pairs(workspace.Items:GetChildren()) do
         if diamond.Name == "Diamond" then
@@ -504,47 +554,80 @@ local function checkAndCollectDiamondsBeforeHop()
     
     if diamondCount > 0 then
         if _G.ShowLogs then
-            warn("⚠️ ยังคงมี Diamond " .. diamondCount .. " อันเหลืออยู่")
+            warn("⚠️ ยังมี Diamond " .. diamondCount .. " อัน")
         end
         StarterGui:SetCore("SendNotification", {
             Icon = "rbxassetid://16129235054",
-            Title = "Warning!",
-            Text = "⚠️ ยังมี Diamond " .. diamondCount .. " อันเหลือ",
-            Duration = 5
+            Title = "Warning",
+            Text = "⚠️ ยังมี Diamond " .. diamondCount .. " อัน",
+            Duration = 3
         })
     else
-        if _G.ShowLogs then
-            print("✅ ตรวจสอบแล้ว ไม่มี Diamond เหลือ")
-        end
         StarterGui:SetCore("SendNotification", {
             Icon = "rbxassetid://16129235054",
-            Title = "Ready to Hop!",
-            Text = "✅ No Diamond In Server\n✅ ไม่มี Diamond เหลือ",
-            Duration = 3
+            Title = "Ready!",
+            Text = "✅ พร้อมย้ายเซิร์ฟ",
+            Duration = 2
         })
     end
     
     return diamondCount == 0
 end
 
--- ฟังก์ชันย้ายเซิร์ฟหลักที่ใช้ SmartHop
-local function smartServerHop()
+-- 🎯 ปรับปรุง smartServerHop ให้รองรับ retry
+local function smartServerHop(maxRetries)
+    maxRetries = maxRetries or 3
     local startTime = tick()
-    print("🛡️ เริ่มระบบ Smart Server Hop")
-    notify("Smart Hop", " ค้นหาเซิร์ฟที่เหมาะสม", 3)
     
-    -- ตรวจสอบสถานะผู้เล่นและเก็บ Diamond ก่อนย้าย
+    print("🛡️ เริ่ม Smart Server Hop (สูงสุด " .. maxRetries .. " ครั้ง)")
+    notify("Smart Hop", "🔍 เริ่มค้นหาเซิร์ฟ", 3)
+    
+    -- ตรวจสอบสถานะก่อนย้าย
     if not checkAndCollectDiamondsBeforeHop() then
-        print("🔍 ตรวจพบปัญหา (เช่น ตายหรือยังมี Diamond) กำลังดำเนินการย้ายเซิร์ฟ...")
+        print("🔄 พบปัญหา กำลังย้ายเซิร์ฟ...")
     end
     
-    -- ใช้ SafeHop เพื่อหาเซิร์ฟที่มีคนน้อย
-    SafeHop()
+    -- ลอง SafeHop หลายครั้ง
+    for attempt = 1, maxRetries do
+        print("🎯 ความพยายามที่ " .. attempt .. "/" .. maxRetries)
+        
+        SafeHop() -- ใช้ SafeHop ที่ปรับปรุงแล้ว
+        
+        -- รอดูผลลัพธ์
+        local waitTime = 0
+        local maxWait = 10 -- รอสูงสุด 10 วินาที
+        
+        while waitTime < maxWait do
+            task.wait(1)
+            waitTime = waitTime + 1
+            
+            -- ถ้า teleport สำเร็จ JobId จะเปลี่ยน
+            if game.JobId ~= game.JobId then
+                print("✅ Teleport สำเร็จ!")
+                return true
+            end
+        end
+        
+        -- ถ้าไม่สำเร็จ และไม่ใช่ attempt สุดท้าย
+        if attempt < maxRetries then
+            print("⚠️ Attempt " .. attempt .. " ล้มเหลว รอก่อนลองใหม่...")
+            notify("Retry", "🔄 ลองใหม่ใน 3 วินาที... (" .. attempt .. "/" .. maxRetries .. ")", 3)
+            task.wait(3)
+        end
+    end
+    
+    -- ถ้าทุกครั้งล้มเหลว ใช้ Random Teleport
+    print("❌ ทุก attempt ล้มเหลว ใช้ Random Teleport")
+    notify("Final Attempt", "🎲 Random Teleport", 3)
+    
+    pcall(function()
+        TeleportService:Teleport(PlaceID, player)
+    end)
     
     local totalTime = math.floor((tick() - startTime) * 100) / 100
-    print(" Smart Server Hop เสร็จสิ้นใน " .. totalTime .. " วินาที!")
+    print("⏱️ Smart Server Hop เสร็จใน " .. totalTime .. " วินาที")
     
-    return true
+    return false
 end
 
 ----
