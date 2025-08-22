@@ -5,8 +5,10 @@ local LocalPlayer = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 local TeleportService = game:GetService("TeleportService")
 local StarterGui = game:GetService("StarterGui")
-repeat task.wait() until LocalPlayer.Character
-
+-- รอให้ Character โหลดเสร็จ
+repeat
+    task.wait(0.1) -- รอเล็กน้อยเพื่อลดภาระ
+until LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
 local lp = game.Players.LocalPlayer
 local pg = lp:WaitForChild("PlayerGui")
 local interface = pg:WaitForChild("Interface", 10)
@@ -42,9 +44,9 @@ spawn(function()
         if getgenv().LockDiamondEnabled and countLabel then
             local diamondValue = tonumber(countLabel.Text) or 0
             local targetValue = tonumber(getgenv().LockDiamond) or 0
-            local ClassTarget = tonumber(getgenv().SelectClass) or 0
+            local className = getgenv().SelectClass or "None"
             notify("Checking Diamonds", "Current: " .. diamondValue .. " | Target: " .. targetValue, 2)
-            notify("Class Target: " .. ClassTarget, 2)
+            notify("Class Target", "Selected Class: " .. className, 2)
             if diamondValue >= targetValue then
                 notify("Diamond Target Reached", "Teleporting to Lobby...", 3)
                 if not isInLobby() then
