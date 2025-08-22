@@ -22,7 +22,7 @@ getgenv().ClassPurchased = false
 spawn(function()
     while task.wait(1) do 
         if getgenv().LockDiamondEnabled and countLabel then
-            if countLabel.Text == getgenv().LockDiamond then
+            if countLabel.Text >= getgenv().LockDiamond then
                 local TeleportService = game:GetService("TeleportService")
                 pcall(function()
                     TeleportService:Teleport(79546208627805, game.Players.LocalPlayer)
