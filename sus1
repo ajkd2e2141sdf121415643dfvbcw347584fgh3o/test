@@ -1,32 +1,36 @@
-local RunService = game:GetService("RunService")
-local Lighting = game:GetService("Lighting")
+-- Services
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Workspace = game:GetService("Workspace")
 local TeleportService = game:GetService("TeleportService")
 local StarterGui = game:GetService("StarterGui")
 
--- ฟังก์ชันรอ Character
+local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
+
+-- ✅ ฟังก์ชันรอ Character ให้แน่นอน
 local function getCharacter()
-    if LocalPlayer.Character then
+    if LocalPlayer.Character and LocalPlayer.Character.Parent then
         return LocalPlayer.Character
     end
     return LocalPlayer.CharacterAdded:Wait()
 end
 
--- รอให้ Humanoid โหลดเสร็จ
 local function waitForHumanoid()
     local character = getCharacter()
     return character:WaitForChild("Humanoid")
 end
 
--- ใช้ตรงนี้แทน repeat...until
+-- เรียกครั้งแรก
 local humanoid = waitForHumanoid()
 
-local pg = LocalPlayer:WaitForChild("PlayerGui")
-local interface = pg:WaitForChild("Interface")
-local diamondCount = interface:WaitForChild("DiamondCount")
-local countLabel = diamondCount:WaitForChild("Count")
+-- ฟังก์ชันให้ GUI โหลด
+local function getGuiObjects()
+    local pg = LocalPlayer:WaitForChild("PlayerGui")
+    local interface = pg:WaitForChild("Interface")
+    local diamondCount = interface:WaitForChild("DiamondCount")
+    local countLabel = diamondCount:WaitForChild("Count")
+    return countLabel
+end
+
+local countLabel = getGuiObjects()
 
 -- Config
 --getgenv().LockDiamond = "2000"
@@ -51,6 +55,14 @@ local function isInLobby()
     return game.PlaceId == 79546208627805
 end
 
+-- ✅ handle respawn → เวลาตายแล้วเกิดใหม่ จะโหลด Humanoid + GUI ใหม่
+LocalPlayer.CharacterAdded:Connect(function()
+    humanoid = waitForHumanoid()
+    countLabel = getGuiObjects()
+    notify("Respawned", "Character and UI reloaded", 3)
+end)
+
+-- Loop หลัก
 spawn(function()
     notify("Script Started", "FPS Booster and Diamond Manager is running...", 5)
     while task.wait(1) do
@@ -58,13 +70,15 @@ spawn(function()
             local diamondValue = tonumber(countLabel.Text) or 0
             local targetValue = tonumber(getgenv().LockDiamond) or 0
             local className = getgenv().SelectClass or "None"
+
             notify("Checking Diamonds", "Current: " .. diamondValue .. " | Target: " .. targetValue, 2)
             notify("Class Target", "Selected Class: " .. className, 2)
+
             if diamondValue >= targetValue then
                 notify("Diamond Target Reached", "Teleporting to Lobby...", 3)
                 if not isInLobby() then
                     pcall(function()
-                        TeleportService:Teleport(79546208627805, game.Players.LocalPlayer)
+                        TeleportService:Teleport(79546208627805, LocalPlayer)
                         notify("Teleporting", "Moving to Place ID 79546208627805", 3)
                     end)
                 else
