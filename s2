@@ -66,9 +66,11 @@ local function optimizeLighting()
     Lighting.Brightness = 1
 
 for _, effect in pairs(Lighting:GetChildren()) do
-        if effect:IsA("BloomEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("PostEffect") or effect:IsA("Atmosphere") then
-            effect.Enabled = false
-        end
+        pcall(function()
+            if effect:IsA("BloomEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("PostEffect") or effect:IsA("Atmosphere") then
+                effect.Enabled = false
+            end
+        end)
     end
     if Lighting:FindFirstChild("Technology") then
         Lighting.Technology = Enum.Technology.Compatibility
