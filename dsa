@@ -1,0 +1,349 @@
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local TeleportService = game:GetService("TeleportService")
+local StarterGui = game:GetService("StarterGui")
+repeat task.wait() until LocalPlayer.Character
+
+local lp = game.Players.LocalPlayer
+local pg = lp:WaitForChild("PlayerGui")
+local interface = pg:WaitForChild("Interface", 10)
+local diamondCount = interface and interface:WaitForChild("DiamondCount", 10)
+local countLabel = diamondCount and diamondCount:WaitForChild("Count", 10)
+
+-- Config
+--getgenv().LockDiamond = "2000"
+getgenv().LockDiamondEnabled = true
+--getgenv().SelectClass = "Campfire"
+getgenv().BuyClassSelect = true
+
+-- ฟังก์ชันแจ้งเตือน
+local function notify(title, text, duration)
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Icon = "rbxassetid://16129235054",
+            Title = title,
+            Text = text,
+            Duration = duration or 3
+        })
+    end)
+end
+
+-- ฟังก์ชันตรวจสอบ Place ID
+local function isInLobby()
+    return game.PlaceId == 79546208627805
+end
+
+spawn(function()
+    notify("Script Started", "FPS Booster and Diamond Manager is running...", 5)
+    while task.wait(1) do
+        if getgenv().LockDiamondEnabled and countLabel then
+            local diamondValue = tonumber(countLabel.Text) or 0
+            local targetValue = tonumber(getgenv().LockDiamond) or 0
+            local ClassTarget = tonumber(getgenv().SelectClass) or 0
+            notify("Checking Diamonds", "Current: " .. diamondValue .. " | Target: " .. targetValue, 2)
+            notify("Class Target: " .. ClassTarget, 2)
+            if diamondValue >= targetValue then
+                notify("Diamond Target Reached", "Teleporting to Lobby...", 3)
+                if not isInLobby() then
+                    pcall(function()
+                        TeleportService:Teleport(79546208627805, game.Players.LocalPlayer)
+                        notify("Teleporting", "Moving to Place ID 79546208627805", 3)
+                    end)
+                else
+                    notify("Already in Lobby", "No teleport needed", 2)
+                end
+            else
+                notify("Farming Diamonds", "Starting farm script (Value: " .. diamondValue .. ")", 3)
+                getgenv().V = "Kaitundiamond"
+                pcall(function()
+                    loadstring(game:HttpGet("https://raw.githubusercontent.com/AAwful/Vector_Hub/0/v2"))()
+                    notify("Farm Script Loaded", "Vector Hub script is running", 3)
+                end)
+            end
+        elseif not countLabel then
+            notify("Error", "DiamondCount not found, skipping loop...", 5)
+        end
+    end
+end)
+local function optimizePerformance()
+    Workspace.FallenPartsDestroyHeight = 0/0 
+    Workspace.Gravity = 196.2
+    settings().Rendering.QualityLevel = 1
+    settings().Rendering.EnableFRM = false 
+
+    if Workspace.Terrain then
+        Workspace.Terrain.WaterWaveSize = 0
+        Workspace.Terrain.WaterWaveSpeed = 0
+    end
+end
+
+local function optimizeCamera()
+    local camera = Workspace.CurrentCamera
+    if camera then
+        camera.FieldOfView = 70
+    end
+end
+
+local function optimizeCharacter()
+    local character = LocalPlayer.Character
+    if character then
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("Decal") or part:IsA("Texture") then
+                part.Transparency = 1 
+            end
+        end
+    end
+end
+
+
+optimizePerformance()
+optimizeCamera()
+optimizeCharacter()
+
+spawn(function()
+    while wait() do
+        optimizeCharacter()
+        wait(5)
+    end
+end)
+
+
+local Lighting = game:GetService("Lighting")
+local Terrain = workspace.Terrain
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local function optimizeLighting()
+
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.FogStart = 0
+    Lighting.ClockTime = 12
+    Lighting.GeographicLatitude = 0
+    Lighting.OutdoorAmbient = Color3.new(0.5, 0.5, 0.5)
+    Lighting.Ambient = Color3.new(0, 0, 0)
+    Lighting.Brightness = 1
+
+for _, effect in pairs(Lighting:GetChildren()) do
+        pcall(function()
+            if effect:IsA("BloomEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("PostEffect") or effect:IsA("Atmosphere") then
+                effect.Enabled = false
+            end
+        end)
+    end
+    if Lighting:FindFirstChild("Technology") then
+        Lighting.Technology = Enum.Technology.Compatibility
+    end
+end
+
+local function optimizeTerrain()
+    print("🏔️ Optimizing Terrain...")
+    
+    Terrain.WaterWaveSize = 0
+    Terrain.WaterWaveSpeed = 0
+    Terrain.WaterReflectance = 0
+    Terrain.WaterTransparency = 0
+
+    if Terrain:FindFirstChild("Decoration") then
+        Terrain.Decoration = false
+    end
+end
+
+local function optimizeParts()
+    print("🧱 Optimizing All Parts...")
+    
+    local function optimizePart(part)
+        if part:IsA("Part") or part:IsA("MeshPart") or part:IsA("UnionOperation") then
+            part.Material = Enum.Material.Plastic
+            part.Reflectance = 0
+            
+            for _, child in pairs(part:GetChildren()) do
+                if child:IsA("Decal") or child:IsA("Texture") or child:IsA("SurfaceGui") then
+                    child:Destroy()
+                end
+            end
+            
+            if part.Name:lower():find("decoration") or part.Name:lower():find("detail") then
+                part.CanCollide = false
+            end
+        elseif part:IsA("MeshPart") then
+            if part.MeshId and part.MeshId ~= "" then
+                part.RenderFidelity = Enum.RenderFidelity.Performance
+            end
+        end
+    end
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        optimizePart(obj)
+    end
+end
+
+
+
+local function removeParticles()
+    
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("ParticleEmitter") or obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Explosion") then
+            obj.Enabled = false
+            obj:Destroy()
+        elseif obj:IsA("Trail") or obj:IsA("Beam") then
+            obj.Enabled = false
+        end
+    end
+end
+
+
+local function optimizeGui()
+    print("🖼️ Optimizing GUI...")
+    
+    local function optimizeGuiObject(gui)
+        if gui:IsA("GuiObject") then
+            gui.BackgroundTransparency = 1
+            if gui:IsA("ImageLabel") or gui:IsA("ImageButton") then
+                gui.Image = ""
+            end
+            
+            for _, effect in pairs(gui:GetChildren()) do
+                if effect:IsA("UIBlur") or effect:IsA("UIGradient") or effect:IsA("UISizeConstraint") then
+                    effect:Destroy()
+                end
+            end
+        end
+    end
+
+    if game.Players.LocalPlayer and game.Players.LocalPlayer:FindFirstChild("PlayerGui") then
+        for _, gui in pairs(game.Players.LocalPlayer.PlayerGui:GetDescendants()) do
+            optimizeGuiObject(gui)
+        end
+    end
+        for _, gui in pairs(game:GetService("StarterGui"):GetDescendants()) do
+        optimizeGuiObject(gui)
+    end
+end
+
+local function optimizeAudio()
+    print("🔊 Optimizing Audio...")
+    
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("Sound") then
+            obj.Volume = 0.1
+            if obj.SoundId and obj.SoundId:lower():find("effect") then
+                obj:Stop()
+                obj.SoundId = ""
+            end
+        end
+    end
+
+    if game:GetService("StarterPlayer"):FindFirstChild("StarterPlayerScripts") then
+        for _, sound in pairs(game:GetService("StarterPlayer").StarterPlayerScripts:GetDescendants()) do
+            if sound:IsA("Sound") then
+                sound.Volume = 0.1
+            end
+        end
+    end
+end
+
+
+local function garbageCollection()
+    print("🗑️ Running Garbage Collection...")
+    
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj.Name == "Handle" and not obj.Parent:IsA("Tool") then
+            if #obj:GetChildren() == 0 then
+                obj:Destroy()
+            end
+        end
+    end
+end
+
+
+local function optimizeStreaming()
+    print("📡 Optimizing Streaming...")
+    
+    if workspace:FindFirstChild("StreamingEnabled") then
+        workspace.StreamingEnabled = true
+        workspace.StreamingMinRadius = 64
+        workspace.StreamingTargetRadius = 128
+    end
+end
+
+
+
+local function setupPerformanceMonitor()
+    print("📊 Setting up Performance Monitor...")
+    
+    local lastTime = tick()
+    local frameCount = 0
+    
+    RunService.Heartbeat:Connect(function()
+        frameCount = frameCount + 1
+        local currentTime = tick()
+        
+        if currentTime - lastTime >= 1 then
+            local fps = frameCount / (currentTime - lastTime)
+            print("Current FPS: " .. math.floor(fps))
+            frameCount = 0
+            lastTime = currentTime
+        end
+    end)
+end
+
+
+local function setupAutoOptimization()
+    print("🔄 Setting up Auto-Optimization...")
+    
+    workspace.DescendantAdded:Connect(function(obj)
+        wait(0.1)
+        
+        if obj:IsA("Part") or obj:IsA("MeshPart") then
+            obj.Material = Enum.Material.Plastic
+            obj.Reflectance = 0
+        elseif obj:IsA("ParticleEmitter") or obj:IsA("Fire") or obj:IsA("Smoke") then
+            obj.Enabled = false
+        elseif obj:IsA("Sound") then
+            obj.Volume = 0.1
+        end
+    end)
+end
+
+local function runFPSBooster()
+    optimizeLighting()
+    wait(0.1)
+    optimizeTerrain()
+    wait(0.1)
+    optimizeParts()
+    wait(0.1)
+    removeParticles()
+    wait(0.1)
+    optimizeGui()
+    wait(0.1)
+    optimizeAudio()
+    wait(0.1)
+    garbageCollection()
+    wait(0.1)
+    optimizeStreaming()
+    wait(0.1)
+    setupPerformanceMonitor()
+    setupAutoOptimization()
+end
+
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.F9 then
+        runFPSBooster()
+    end
+end)
+
+runFPSBooster()
+
+spawn(function()
+    while true do
+        removeParticles()
+        garbageCollection()
+        wait(30)
+    end
+end)
