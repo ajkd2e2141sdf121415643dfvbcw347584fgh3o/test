@@ -279,6 +279,15 @@ local function GetCFrameMonEnemySpawn(MobName)
     return matchingCFrames
 end
 
+local function saveMonsterCFrame(monster)
+    if monster:IsA("Model") and monster:FindFirstChild("HumanoidRootPart") then
+        local cleanName = cleanMobName(monster.Name)
+        OldMonsterCFrames[cleanName] = OldMonsterCFrames[cleanName] or {}
+        if #OldMonsterCFrames[cleanName] < AutoCFrameSettings.MaxPositions then
+            table.insert(OldMonsterCFrames[cleanName], monster.HumanoidRootPart.CFrame)
+        end
+    end
+end
 -- ฟังก์ชันตรวจสอบเควสต์
 local function CheckQuest()
     local currentTime = tick()
