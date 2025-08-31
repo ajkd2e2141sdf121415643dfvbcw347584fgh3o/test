@@ -134,14 +134,21 @@ function EquipBloxFruit()
         end
     end
 end
+
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
+local OldMonsterCFrames = {}
 local cachedQuestData = nil
 local lastQuestCheck = 0
 local QUEST_CACHE_DURATION = 2
+local CFrameArray = {}
+local SetCFrame = 1
+local lastCFrameUpdate = 0
+local CFRAME_UPDATE_INTERVAL = 0.5
 local World1, World2, World3 = false, false, false
+local CFramemonenemyspawn = {}
 
 -- ตรวจสอบโลก
 if game.PlaceId == 2753915549 then
@@ -152,9 +159,28 @@ elseif game.PlaceId == 7449423635 then
     World3 = true
 end
 
+-- การตั้งค่า Auto CFrame
+local AutoCFrameSettings = {
+    MaxDistance = 50,
+    UpdateInterval = 0.5,
+    MaxPositions = 8,
+    PreferSpawns = true
+}
+
 -- ฟังก์ชันทำความสะอาดชื่อมอนสเตอร์
 local function cleanMobName(name)
     return name:gsub("Lv%. ", ""):gsub("[%[%]]", ""):gsub("%d+", ""):gsub("%s+", "")
+end
+
+-- ฟังก์ชันบันทึก CFrame ของมอนสเตอร์
+local function saveMonsterCFrame(monster)
+    if monster:IsA("Model") and monster:FindFirstChild("HumanoidRootPart") then
+        local cleanName = cleanMobName(monster.Name)
+        OldMonsterCFrames[cleanName] = OldMonsterCFrames[cleanName] or {}
+        if #OldMonsterCFrames[cleanName] < AutoCFrameSettings.MaxPositions then
+            table.insert(OldMonsterCFrames[cleanName], monster.HumanoidRootPart.CFrame)
+        end
+    end
 end
 
 -- ฟังก์ชันหา CFramemonenemyspawn
@@ -179,7 +205,7 @@ local function GetCFrameMonEnemySpawn(MobName)
         end
     end
     
-    -- พิกัดสำรองสำหรับทุกโลก
+    -- ถ้าไม่มี CFrame ให้ใช้พิกัดสำรอง
     if #matchingCFrames == 0 then
         local defaultCFrames = {
             -- World 1 (First Sea)
@@ -279,15 +305,79 @@ local function GetCFrameMonEnemySpawn(MobName)
     return matchingCFrames
 end
 
-local function saveMonsterCFrame(monster)
-    if monster:IsA("Model") and monster:FindFirstChild("HumanoidRootPart") then
-        local cleanName = cleanMobName(monster.Name)
-        OldMonsterCFrames[cleanName] = OldMonsterCFrames[cleanName] or {}
-        if #OldMonsterCFrames[cleanName] < AutoCFrameSettings.MaxPositions then
-            table.insert(OldMonsterCFrames[cleanName], monster.HumanoidRootPart.CFrame)
+-- สร้าง EnemySpawns
+local function setupEnemySpawns()
+    if not Workspace:FindFirstChild("EnemySpawns") then
+        local EnemySpawns = Instance.new("Folder", Workspace)
+        EnemySpawns.Name = "EnemySpawns"
+        
+        for _, v in pairs(Workspace._WorldOrigin.EnemySpawns:GetChildren()) do
+            if v:IsA("Part") then
+                local EnemySpawnsX2 = v:Clone()
+                local cleanName = cleanMobName(v.Name)
+                EnemySpawnsX2.Name = cleanName
+                EnemySpawnsX2.Parent = Workspace.EnemySpawns
+                EnemySpawnsX2.Anchored = false
+            end
+        end
+        
+        for _, v in pairs(Workspace.Enemies:GetChildren()) do
+            if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
+                local cleanName = cleanMobName(v.Name)
+                if not Workspace.EnemySpawns:FindFirstChild(cleanName) then
+                    local EnemySpawnsX2 = v.HumanoidRootPart:Clone()
+                    EnemySpawnsX2.Name = cleanName
+                    EnemySpawnsX2.Parent = Workspace.EnemySpawns
+                    EnemySpawnsX2.Anchored = false
+                end
+            end
+        end
+        
+        for _, v in pairs(ReplicatedStorage:GetChildren()) do
+            if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
+                local cleanName = cleanMobName(v.Name)
+                if not Workspace.EnemySpawns:FindFirstChild(cleanName) then
+                    local EnemySpawnsX2 = v.HumanoidRootPart:Clone()
+                    EnemySpawnsX2.Name = cleanName
+                    EnemySpawnsX2.Parent = Workspace.EnemySpawns
+                    EnemySpawnsX2.Anchored = false
+                end
+            end
         end
     end
 end
+
+-- เรียกใช้การตั้งค่า EnemySpawns
+setupEnemySpawns()
+
+-- ฟังก์ชันจัดการ Auto CFrame (ปรับให้ใช้ CFramemonenemyspawn)
+local function handleAutoCFrame(CFramemonenemyspawn, mobName)
+    if not _G.Auto_CFrame then
+        return CFramemonenemyspawn[1] or CFrame.new(0, 30, 0)
+    end
+    
+    if #CFramemonenemyspawn == 0 or (tick() - lastCFrameUpdate) > 10 then
+        CFramemonenemyspawn = GetCFrameMonEnemySpawn(mobName)
+        lastCFrameUpdate = tick()
+        SetCFrame = 1
+    end
+    
+    local currentTarget = CFramemonenemyspawn[SetCFrame]
+    if currentTarget then
+        local distance = (currentTarget.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+        if distance <= AutoCFrameSettings.MaxDistance then
+            SetCFrame = SetCFrame + 1
+            if SetCFrame > #CFramemonenemyspawn then
+                SetCFrame = 1
+            end
+            wait(AutoCFrameSettings.UpdateInterval)
+        end
+        return currentTarget
+    end
+    
+    return CFramemonenemyspawn[1] or CFrame.new(0, 30, 0)
+end
+
 -- ฟังก์ชันตรวจสอบเควสต์
 local function CheckQuest()
     local currentTime = tick()
@@ -297,7 +387,7 @@ local function CheckQuest()
     
     local MyLevel = LocalPlayer.Data.Level.Value
     local questData = { Mon = nil, LevelQuest = nil, NameQuest = nil, NameMon = nil, CFrameQuest = nil, CFramemonenemyspawn = {} }
-        -- World 1 (First Sea)
+    
         if MyLevel >= 0 and MyLevel <= 9 then
             questData = {
                 Mon = "Bandit [Lv. 5]",
