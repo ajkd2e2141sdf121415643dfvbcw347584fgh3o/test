@@ -1,8 +1,10 @@
+
 -- Services
 local Players = game:GetService("Players")
 local TeleportService = game:GetService("TeleportService")
 local StarterGui = game:GetService("StarterGui")
 local HttpService = game:GetService("HttpService")
+
 local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 local PlaceId = game.PlaceId
 local CurrentJobId = game.JobId
@@ -44,7 +46,7 @@ local function QuickServerHop()
                 string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Random&limit=50", PlaceId)
             ))
         end)
-        
+
         if success and servers and servers.data then
             -- หา server ที่ไม่ใช่ server ปัจจุบันและไม่เคยเข้า
             for _, server in ipairs(servers.data) do
@@ -86,6 +88,7 @@ end
 local function getCharacter()
     local timeout = 3
     local start = tick()
+
     while not (LocalPlayer.Character and LocalPlayer.Character.Parent) do
         if tick() - start > timeout then
             warn("[Script] Character load timeout! Server hopping...")
@@ -94,6 +97,7 @@ local function getCharacter()
         end
         task.wait(0.1)
     end
+
     return LocalPlayer.Character
 end
 
@@ -110,6 +114,7 @@ local function getGuiObjects()
     local timeout = 3
     local start = tick()
     local pg
+
     while not pg do
         pg = LocalPlayer:FindFirstChild("PlayerGui")
         if tick() - start > timeout then
@@ -119,17 +124,17 @@ local function getGuiObjects()
         end
         task.wait(0.1)
     end
-    
+
     local interface = pg:WaitForChild("Interface", 3)
     local diamondCount = interface and interface:WaitForChild("DiamondCount", 3)
     local countLabel = diamondCount and diamondCount:WaitForChild("Count", 3)
-    
+
     if not countLabel then
         warn("[Script] DiamondCount UI not found! Server hopping...")
         QuickServerHop()
         return
     end
-    
+
     return countLabel
 end
 
@@ -137,17 +142,13 @@ end
 local humanoid = waitForHumanoid()
 local countLabel = getGuiObjects()
 
--- Config (ถ้าไม่ได้ตั้งค่าจะใช้ค่า default)
-getgenv().AutoFarm = getgenv().AutoFarm or false
-getgenv().LockDiamondEnabled = getgenv().LockDiamondEnabled or true
-getgenv().BuyClassSelect = getgenv().BuyClassSelect or true
-getgenv().LockDiamond = getgenv().LockDiamond or 1000
-getgenv().SelectClasses = getgenv().SelectClasses or {"Camper"}
-getgenv().Webhookurl = getgenv().Webhookurl or ""
-_G.FarmChest = _G.FarmChest or false
-
--- ตัวแปรสำหรับเก็บ script ที่โหลดแล้ว
-local farmScriptLoaded = false
+-- Config
+getgenv().LockDiamondEnabled = true
+getgenv().BuyClassSelect = true
+-- สำหรับซื้อหลายคลาส ใช้ table แทน
+--getgenv().SelectClasses = {"Camper", "Scavenger"}
+-- หรือจะใช้แค่คลาสเดียว
+-- getgenv().SelectClasses = {"Camper"}
 
 -- ฟังก์ชันแจ้งเตือน
 local function notify(title, text, duration)
@@ -160,35 +161,9 @@ local function notify(title, text, duration)
         })
     end)
 end
-
--- ฟังก์ชันส่ง webhook
-local function sendWebhook(message)
-    if getgenv().Webhookurl and getgenv().Webhookurl ~= "" and getgenv().Webhookurl ~= "linkwebhook" then
-        pcall(function()
-            local data = {
-                ["content"] = message,
-                ["username"] = "Roblox Bot",
-                ["avatar_url"] = "https://cdn.discordapp.com/attachments/your-avatar-url"
-            }
-            HttpService:PostAsync(getgenv().Webhookurl, HttpService:JSONEncode(data), Enum.HttpContentType.ApplicationJson)
-        end)
-    end
-end
-
 -- ฟังก์ชันตรวจสอบ Place ID
 local function isInLobby()
     return game.PlaceId == 79546208627805
-end
-
--- ฟังก์ชันโหลด Auto Farm Script
-local function loadFarmScript()
-    if not farmScriptLoaded and getgenv().AutoFarm then
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/7878wqz/sc1/refs/heads/main/99Dmh"))()
-            farmScriptLoaded = true
-            notify("Auto Farm", "Farm script loaded!", 3)
-        end)
-    end
 end
 
 -- handle respawn
@@ -196,38 +171,32 @@ LocalPlayer.CharacterAdded:Connect(function()
     humanoid = waitForHumanoid()
     countLabel = getGuiObjects()
     notify("Respawned", "Character and UI reloaded", 3)
-    
-    -- โหลด farm script ใหม่หลัง respawn ถ้าจำเป็น
-    farmScriptLoaded = false
-    if getgenv().AutoFarm and not isInLobby() then
-        task.wait(2) -- รอให้ character โหลดเสร็จ
-        loadFarmScript()
-    end
 end)
 
 -- Loop หลัก
 spawn(function()
+    
     while task.wait(1) do
-        if getgenv().LockDiamondEnabled and countLabel then
-            local diamondValue = tonumber(countLabel.Text) or 0
-            local targetValue = tonumber(getgenv().LockDiamond) or 0
-            local classNames = table.concat(getgenv().SelectClasses or {}, ", ") or "None"
-            
-            notify("Status", "เพชร: " .. diamondValue .. "/" .. targetValue .. " | คลาส: " .. classNames, 2)
-            
-            if diamondValue >= targetValue then
-                notify("Diamond Target Reached", "เพชรครบแล้ว! กำลังไปล็อบบี้...", 3)
-                sendWebhook("🎯 **เป้าหมายสำเร็จ!** เพชร: " .. diamondValue .. "/" .. targetValue .. " | เวลา: " .. os.date("%X"))
-                
-                if not isInLobby() then
+         if getgenv().AutoFarm then
+            if getgenv().LockDiamondEnabled and countLabel then
+
+                local diamondValue = tonumber(countLabel.Text) or 0
+                local targetValue = tonumber(getgenv().LockDiamond) or 0
+                local classNames = table.concat(getgenv().SelectClasses or {}, ", ") or "None"
+
+                notify("Notify", "คลาสที่เลือก: " .. classNames)
+                notify("Notify", "มีไดม่อนทั้งหมด " .. diamondValue .. " เป้าหมายที่ตั้ง " .. targetValue)
+                if diamondValue >= targetValue then
+                    notify("Diamond Target Reached", "Teleporting to Lobby...", 3)
+                    if not isInLobby() then
+                        pcall(function()
+                            TeleportService:Teleport(79546208627805, LocalPlayer)
+                        end)
+                    end
+                else
                     pcall(function()
-                        TeleportService:Teleport(79546208627805, LocalPlayer)
+                        loadstring(game:HttpGet("https://raw.githubusercontent.com/7878wqz/sc1/refs/heads/main/99Dmh"))()
                     end)
-                end
-            else
-                -- โหลด farm script ถ้ายังไม่ได้โหลดและไม่ใช่ lobby
-                if getgenv().AutoFarm and not isInLobby() then
-                    loadFarmScript()
                 end
             end
         end
@@ -241,18 +210,14 @@ spawn(function()
             for _, className in ipairs(getgenv().SelectClasses) do
                 pcall(function()
                     game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("RequestPurchaseClass"):FireServer(className)
-                    notify("Buying Class", "ซื้อคลาส: " .. className, 2)
-                    sendWebhook("🛒 **ซื้อคลาส:** " .. className .. " | เวลา: " .. os.date("%X"))
+                    notify("Buying Class", "Purchased: " .. className, 2)
                 end)
                 wait(1) -- รอ 1 วินาทีระหว่างการซื้อแต่ละคลาส
             end
-            wait(1) -- รอ 5 วินาทีก่อนลองซื้อรอบใหม่
+            wait(5) -- รอ 5 วินาทีก่อนลองซื้อรอบใหม่
         end
     end
 end)
 
 -- โหลด script เสริม
 loadstring(game:HttpGet('https://raw.githubusercontent.com/7878wqz/sc1/refs/heads/main/h2'))()
-
-print("✅ Script loaded successfully!")
-notify("Script Loaded", "Auto Farm System Ready!", 5)
