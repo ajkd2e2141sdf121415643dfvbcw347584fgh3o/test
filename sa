@@ -1,10 +1,10 @@
 
 local config = {
-    เลือกอาวุธ = {"Katana", "Greatsword", "DualGun", "Guitar"}, -- อาวุธที่ต้องการ
-    เลือกเปิค = {"Healer", "DoubleDmg", "Vampire"}, -- Perk ที่ต้องการ  
-    เลือกreplayหรือback = "Replay", -- "Replay" หรือ "Back"
-    เลือกแมพ = "School", -- แมพที่ต้องการ
-    เลือกความยาก = "Nightmare" -- "Normal", "Hard", "Nightmare"
+    Weapon = {"Katana", "Greatsword", "DualGun", "Guitar"}, -- อาวุธที่ต้องการ
+    Perk = {"Healer", "DoubleDmg", "Vampire"}, -- Perk ที่ต้องการ  
+    Paly = "Replay", -- "Replay" หรือ "Back"
+    Map = "School", -- แมพที่ต้องการ
+    Difficult = "Nightmare" -- "Normal", "Hard", "Nightmare"
 }
 
 -- ตรวจสอบ Place ID
