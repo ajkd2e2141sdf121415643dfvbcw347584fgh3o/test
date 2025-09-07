@@ -1,12 +1,4 @@
 
-local config = {
-    Weapon = {"Katana", "Greatsword", "DualGun", "Guitar"}, -- อาวุธที่ต้องการ
-    Perk = {"Healer", "DoubleDmg", "Vampire"}, -- Perk ที่ต้องการ  
-    Paly = "Replay", -- "Replay" หรือ "Back"
-    Map = "School", -- แมพที่ต้องการ
-    Difficult = "Nightmare" -- "Normal", "Hard", "Nightmare"
-}
-
 -- ตรวจสอบ Place ID
 if game.PlaceId == 103754275310547 then 
     -- Auto Spin Configuration
