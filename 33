@@ -1,12 +1,41 @@
-
-local config = {
-    Weapon = {"Katana", "Greatsword", "DualGun", "Guitar"}, -- อาวุธที่ต้องการ
-    Perk = {"Healer", "DoubleDmg", "Vampire"}, -- Perk ที่ต้องการ  
-    Paly = "Replay", -- "Replay" หรือ "Back"
-    Map = "School", -- แมพที่ต้องการ
-    Difficult = "Nightmare" -- "Normal", "Hard", "Nightmare"
-}
-
+if not config or type(config) ~= "table" then
+    print("🔧 Using default config (no external config found)")
+    config = {
+        Weapon = {"Katana", "Greatsword", "DualGun", "Guitar"},
+        Perk = {"Healer", "DoubleDmg", "Vampire"},
+        Play = "Replay", -- แก้ไข typo จาก "Paly" เป็น "Play"
+        Map = "School",
+        Difficult = "Nightmare"
+    }
+else
+    print("✅ Using external config")
+    -- ตรวจสอบและเติมค่าที่ขาดหายไป
+    if not config.Weapon then 
+        config.Weapon = {"Katana", "Greatsword", "DualGun", "Guitar"}
+        print("⚠️ Weapon not set, using default")
+    end
+    if not config.Perk then 
+        config.Perk = {"Healer", "DoubleDmg", "Vampire"}
+        print("⚠️ Perk not set, using default")
+    end
+    if not config.Play and not config.Paly then 
+        config.Play = "Replay"
+        print("⚠️ Play mode not set, using default")
+    end
+    if not config.Map then 
+        config.Map = "School"
+        print("⚠️ Map not set, using default")
+    end
+    if not config.Difficult then 
+        config.Difficult = "Nightmare"
+        print("⚠️ Difficult not set, using default")
+    end
+    
+    -- รองรับ typo "Paly" -> "Play"
+    if config.Paly and not config.Play then
+        config.Play = config.Paly
+    end
+end
 -- ตรวจสอบ Place ID
 if game.PlaceId == 103754275310547 then 
     -- Auto Spin Configuration
