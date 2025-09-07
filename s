@@ -1,5 +1,3 @@
--- Main Script สำหรับอัพโหลดไป GitHub
--- ใช้งาน: loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/yourrepo/main/main.lua"))()
 
 local config = {
     เลือกอาวุธ = {"Katana", "Greatsword", "DualGun", "Guitar"}, -- อาวุธที่ต้องการ
