@@ -1,0 +1,782 @@
+-- Main Script สำหรับอัพโหลดไป GitHub
+-- ใช้งาน: loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/yourrepo/main/main.lua"))()
+
+local config = {
+    เลือกอาวุธ = {"Katana", "Greatsword", "DualGun", "Guitar"}, -- อาวุธที่ต้องการ
+    เลือกเปิค = {"Healer", "DoubleDmg", "Vampire"}, -- Perk ที่ต้องการ  
+    เลือกreplayหรือback = "Replay", -- "Replay" หรือ "Back"
+    เลือกแมพ = "School", -- แมพที่ต้องการ
+    เลือกความยาก = "Nightmare" -- "Normal", "Hard", "Nightmare"
+}
+
+-- ตรวจสอบ Place ID
+if game.PlaceId == 103754275310547 then 
+    -- Auto Spin Configuration
+    _G.AutoSpin = true
+    _G.MinMoneyForSpin = 3000
+    
+    -- Auto Join Configuration  
+    _G.AutoJoin = false
+    _G.SelectMap = config.เลือกแมพ
+    _G.SelectMode = config.เลือกความยาก
+    
+    -- Set target items from config
+    local targetWeapons = config.เลือกอาวุธ
+    local targetPerks = config.เลือกเปิค
+
+    local v157 = game:GetService("VirtualInputManager")
+    local s = game:GetService("GuiService")
+
+    -- ฟังก์ชัน parseMoneyText (ปรับปรุงแล้ว)
+    local function parseMoneyText(moneyText)
+        if not moneyText then return 0 end
+        
+        -- ลบ $ และช่องว่าง
+        local cleanText = moneyText:gsub("[$%s]", "")
+        
+        -- ลบเครื่องหมายคั่น , (comma)
+        cleanText = cleanText:gsub(",", "")
+        
+        -- ตรวจสอบหน่วย K, M, B
+        local multiplier = 1
+        local number = cleanText
+        
+        if cleanText:find("K") or cleanText:find("k") then
+            multiplier = 1000
+            number = cleanText:gsub("[Kk]", "")
+        elseif cleanText:find("M") or cleanText:find("m") then
+            multiplier = 1000000
+            number = cleanText:gsub("[Mm]", "")
+        elseif cleanText:find("B") or cleanText:find("b") then
+            multiplier = 1000000000
+            number = cleanText:gsub("[Bb]", "")
+        end
+        
+        -- แปลงเป็นตัวเลข
+        local numValue = tonumber(number)
+        if numValue then
+            return numValue * multiplier
+        else
+            return 0
+        end
+    end
+
+    local function checkMoney()
+        local success, moneyText = pcall(function()
+            return game:GetService("Players").LocalPlayer.PlayerGui.GUI.Hud.Left.Cashty.Content.Txt.Text
+        end)
+        if not success then
+            warn("❌ Cannot get money text")
+            return 0
+        end
+        local currentMoney = parseMoneyText(moneyText)
+        print("💰 Current Money:", moneyText, "=", currentMoney)
+        return currentMoney
+    end
+
+    local function findEquippedWeaponText()
+        local gui = game:GetService("Players").LocalPlayer.PlayerGui.GUI
+        local possiblePaths = {
+            function() return gui:GetChildren()[28].Equiped.Content.Txt.Text end,
+            function() return gui.Weapon.Equipped.Content.Txt.Text end,
+            function() return gui.WeaponSpin.Equipped.Content.Txt.Text end,
+            function() return gui.Spin.WeaponSpin.Equipped.Content.Txt.Text end,
+        }
+        for _, pathFunc in pairs(possiblePaths) do
+            local success, result = pcall(pathFunc)
+            if success and result then
+                return result
+            end
+        end
+        return nil
+    end
+
+    local function findEquippedPerkText()
+        local gui = game:GetService("Players").LocalPlayer.PlayerGui.GUI
+        local possiblePaths = {
+            function() return gui.Spin.Equiped.Content.Txt.Text end,
+            function() return gui.PerkSpin.Equipped.Content.Txt.Text end,
+            function() return gui.Perk.Equipped.Content.Txt.Text end,
+            function() return gui.Spin.PerkSpin.Equipped.Content.Txt.Text end,
+        }
+        for _, pathFunc in pairs(possiblePaths) do
+            local success, result = pcall(pathFunc)
+            if success and result then
+                return result
+            end
+        end
+        return nil
+    end
+
+    local function hasDesiredWeapon(targetWeapons)
+        local equippedWeapon = findEquippedWeaponText()
+        if not equippedWeapon then
+            print("⚠️ ไม่สามารถหา equipped weapon ได้")
+            return false
+        end
+        for _, weapon in pairs(targetWeapons) do
+            if equippedWeapon == weapon then
+                print("✅ ได้อาวุธที่ต้องการแล้ว:", weapon)
+                return true
+            end
+        end
+        print("🔄 อาวุธปัจจุบัน:", equippedWeapon, "ยังไม่ใช่ที่ต้องการ")
+        return false
+    end
+
+    local function hasDesiredPerk(targetPerks)
+        local equippedPerk = findEquippedPerkText()
+        if not equippedPerk then
+            print("⚠️ ไม่สามารถหา equipped perk ได้")
+            return false
+        end
+        for _, perk in pairs(targetPerks) do
+            if equippedPerk == perk then
+                print("✅ ได้ Perk ที่ต้องการแล้ว:", perk)
+                return true
+            end
+        end
+        print("🔄 Perk ปัจจุบัน:", equippedPerk, "ยังไม่ใช่ที่ต้องการ")
+        return false
+    end
+
+    local function exitSpinMenu(isWeaponSpin)
+        local gui = game:GetService("Players").LocalPlayer.PlayerGui.GUI
+        local backButton
+        if isWeaponSpin then
+            backButton = gui:GetChildren()[28].Back.Button
+        else
+            backButton = gui.Spin.Back.Button
+        end
+        s.SelectedObject = backButton
+        v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+        v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+        task.wait(0.5)
+    end
+
+    local function spinWeapon()
+        if hasDesiredWeapon(targetWeapons) then
+            print("✅ มีอาวุธที่ต้องการแล้ว ข้าม Weapon Spin")
+            return true
+        end
+
+        print("🗡️ เริ่มการสุ่มอาวุธ...")
+        repeat
+            task.wait()
+            v157:SendKeyEvent(true, Enum.KeyCode.J, false, game)
+            v157:SendKeyEvent(false, Enum.KeyCode.J, false, game)
+        until game:GetService("Players").LocalPlayer.PlayerGui.GUI:GetChildren()[28].Visible == true
+
+        local spinAttempts = 0
+        local maxAttempts = 20
+
+        repeat
+            task.wait(0.1)
+            if checkMoney() < _G.MinMoneyForSpin then
+                print("💸 เงินไม่พอสำหรับสุ่มอาวุธ!")
+                exitSpinMenu(true)
+                return false
+            end
+
+            spinAttempts = spinAttempts + 1
+            if spinAttempts > maxAttempts then
+                print("⚠️ สุ่มอาวุธครบ", maxAttempts, "ครั้งแล้ว")
+                exitSpinMenu(true)
+                return false
+            end
+
+            local success = pcall(function()
+                local spinGui = game:GetService("Players").LocalPlayer.PlayerGui.GUI:GetChildren()[28].SpinButtons.Holder
+                if spinGui.Lucky.Counter.Text ~= "0 Spins" then
+                    s.SelectedObject = spinGui.Lucky
+                else
+                    s.SelectedObject = spinGui.Normal
+                end
+                v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            end)
+
+            if success then
+                if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("useraskGUI") and
+                   game:GetService("Players").LocalPlayer.PlayerGui.useraskGUI:FindFirstChild("USERAGREE") and
+                   game:GetService("Players").LocalPlayer.PlayerGui.useraskGUI.USERAGREE.GroupTransparency ~= 1 then
+                    local sureButton = game:GetService("Players").LocalPlayer.PlayerGui.useraskGUI.USERAGREE.Frame.responseframe:GetChildren()[2]
+                    if sureButton then
+                        s.SelectedObject = sureButton
+                        v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                        v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                    end
+                end
+            else
+                print("❌ ไม่สามารถสุ่มอาวุธได้")
+                task.wait(1)
+            end
+
+        until hasDesiredWeapon(targetWeapons)
+
+        exitSpinMenu(true)
+        return hasDesiredWeapon(targetWeapons)
+    end
+
+    local function spinPerk()
+        if hasDesiredPerk(targetPerks) then
+            print("✅ มี Perk ที่ต้องการแล้ว ข้าม Perk Spin")
+            return true
+        end
+
+        print("✨ เริ่มการสุ่ม Perk...")
+        repeat
+            task.wait()
+            v157:SendKeyEvent(true, Enum.KeyCode.K, false, game)
+            v157:SendKeyEvent(false, Enum.KeyCode.K, false, game)
+        until game:GetService("Players").LocalPlayer.PlayerGui.GUI.Spin.Visible == true
+
+        local spinAttempts = 0
+        local maxAttempts = 20
+
+        repeat
+            task.wait(0.1)
+            if checkMoney() < _G.MinMoneyForSpin then
+                print("💸 เงินไม่พอสำหรับสุ่ม Perk!")
+                exitSpinMenu(false)
+                return false
+            end
+
+            spinAttempts = spinAttempts + 1
+            if spinAttempts > maxAttempts then
+                print("⚠️ สุ่ม Perk ครบ", maxAttempts, "ครั้งแล้ว")
+                exitSpinMenu(false)
+                return false
+            end
+
+            local success = pcall(function()
+                local spinGui = game:GetService("Players").LocalPlayer.PlayerGui.GUI.Spin.SpinButtons.Holder
+                if spinGui.Lucky.Counter.Text ~= "0 Spins" then
+                    s.SelectedObject = spinGui.Lucky
+                else
+                    s.SelectedObject = spinGui.Normal
+                end
+                v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            end)
+
+            if success then
+                if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("useraskGUI") and
+                   game:GetService("Players").LocalPlayer.PlayerGui.useraskGUI:FindFirstChild("USERAGREE") and
+                   game:GetService("Players").LocalPlayer.PlayerGui.useraskGUI.USERAGREE.GroupTransparency ~= 1 then
+                    local sureButton = game:GetService("Players").LocalPlayer.PlayerGui.useraskGUI.USERAGREE.Frame.responseframe:GetChildren()[2]
+                    if sureButton then
+                        s.SelectedObject = sureButton
+                        v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                        v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                    end
+                end
+            else
+                print("❌ ไม่สามารถสุ่ม Perk ได้")
+                task.wait(0.1)
+            end
+
+        until hasDesiredPerk(targetPerks)
+
+        exitSpinMenu(false)
+        return hasDesiredPerk(targetPerks)
+    end
+
+    local function autoSpin()
+        if not _G.AutoSpin then
+            print("🚫 Auto Spin ปิดอยู่")
+            return
+        end
+
+        while _G.AutoSpin do
+            local currentMoney = checkMoney()
+            if currentMoney < _G.MinMoneyForSpin then
+                print("💰 เงินไม่เพียงพอ! ต้องการมากกว่า", _G.MinMoneyForSpin, "แต่มีแค่", currentMoney)
+                break
+            end
+
+            if not spinWeapon() then
+                if checkMoney() >= _G.MinMoneyForSpin then
+                    print("🔄 ครบรอบการสุ่มอาวุธ ไปสุ่ม Perk")
+                else
+                    break
+                end
+            else
+                print("✅ ได้อาวุธที่ต้องการแล้ว")
+            end
+
+            if not spinPerk() then
+                if checkMoney() >= _G.MinMoneyForSpin then
+                    print("🔄 ครบรอบการสุ่ม Perk ไปสุ่มอาวุธ")
+                else
+                    break
+                end
+            else
+                print("✅ ได้ Perk ที่ต้องการแล้ว")
+            end
+
+            if hasDesiredWeapon(targetWeapons) and hasDesiredPerk(targetPerks) then
+                print("🎉 ได้ทั้งอาวุธและ Perk ที่ต้องการแล้ว! Auto Spin เสร็จสิ้น")
+                _G.AutoSpin = false
+                break
+            end
+
+            task.wait(0.1)
+        end
+    end
+
+    -- ฟังก์ชันลบ HTML tag
+    local function stripTags(text)
+        if not text then return "" end
+        return text:gsub("<[^>]->", "")
+    end
+
+    -- ฟังก์ชันอัปเดต cleanText
+    local function getCleanMapTypeText()
+        local mapTypeText = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.mapdata.mapType.Text
+        return stripTags(mapTypeText)
+    end
+
+    -- ฟังก์ชันหลัก AutoJoin
+    local function autoJoin()
+        if not _G.AutoJoin then return end
+
+        autoSpin()
+        
+        if game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Visible == false then
+            repeat task.wait(0.1)
+            for _, v in pairs(workspace.Match:GetChildren()) do
+                if v:IsA("Part") then 
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+                end
+            end
+            until game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Visible == true
+        end
+
+        repeat
+            task.wait(0.3)
+            s.SelectedObject = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.options.playerselect.F.l
+            v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+            v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            if not _G.AutoJoin then break end
+        until game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.options.playerselect.F.Shape.Fill.TextLabel.Text == "1"
+        print("ลดจำนวนผู้เล่นสำเร็จ")
+
+        repeat
+            task.wait(0.3)
+            s.SelectedObject = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.options.buttons.choosemap
+            v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+            v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            if not _G.AutoJoin then break end
+        until game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.maps.Visible == true
+        print("เปิดเมนูแมพสำเร็จ")
+        task.wait(0.3)
+        
+        local mapsFolder = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.maps
+        if mapsFolder then
+            for _, v in pairs(mapsFolder:GetChildren()) do
+                if v:IsA("TextButton") then
+                    local textLabel = v:FindFirstChild("TextLabel")
+                    if textLabel and textLabel.Text == _G.SelectMap then
+                        s.SelectedObject = v
+                        repeat
+                            task.wait(0.1)
+                            v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                            v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                            if not _G.AutoJoin then break end
+                        until string.find(getCleanMapTypeText(), _G.SelectMap:upper())
+                        print("เลือกแมพ", _G.SelectMap, "สำเร็จ")
+                        break
+                    end
+                end
+            end
+        else
+            warn("ไม่พบโฟลเดอร์ maps")
+        end
+        task.wait(0.3)
+        
+        local choosediffsButton = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.options.buttons.choosediffs
+        if choosediffsButton and choosediffsButton:IsA("TextButton") then
+            s.SelectedObject = choosediffsButton
+            repeat
+                task.wait(0.1)
+                v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                if not _G.AutoJoin then break end
+            until game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.modes.Visible == true
+            print("เปิดเมนูโหมดสำเร็จ")
+        else
+            warn("ไม่พบปุ่ม choosediffs")
+        end
+        task.wait(0.3)
+        
+        local modesFolder = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.modes
+        if modesFolder and modesFolder.Visible then
+            for _, v in pairs(modesFolder:GetChildren()) do
+                if v:IsA("TextButton") then
+                    local textLabel = v:FindFirstChild("TextLabel")
+                    if textLabel and textLabel.Text == _G.SelectMode then
+                        s.SelectedObject = v
+                        repeat
+                            task.wait(0.1)
+                            v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                            v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                            if not _G.AutoJoin then break end
+                        until string.find(getCleanMapTypeText(), _G.SelectMode:upper())
+                        print("เลือกโหมด", _G.SelectMode, "สำเร็จ")
+                        break
+                    end
+                end
+            end
+        else
+            warn("ไม่พบโฟลเดอร์ modes หรือยังไม่เปิด")
+        end
+        task.wait(0.3)
+        
+        local createButton = game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Content.iContent.Button
+        if createButton and createButton:IsA("ImageButton") then
+            s.SelectedObject = createButton
+            repeat
+                task.wait(0.1)
+                v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                if not _G.AutoJoin then break end
+            until not game:GetService("Players").LocalPlayer.PlayerGui.GUI.StartPlaceRedo.Visible
+            print("กด CREATE สำเร็จ")
+        else
+            warn("ไม่พบปุ่ม CREATE")
+        end
+    end
+
+    for i = 1,9999 do 
+        autoJoin() 
+        _G.AutoJoin = true 
+        coroutine.wrap(autoJoin)() 
+    end
+else
+    -- Load AutoKill module for other games
+    _G.End = config.เลือกreplayหรือback
+    _G.killzombie = true
+    _G.takedropitem = true
+    
+    -- AutoKill functionality (compact version)
+    local function AutoKill()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local Players = game:GetService("Players")
+        local s = game:GetService("GuiService")
+        local v157 = game:GetService("VirtualInputManager")
+
+        local ATTACK_CONFIG = {
+            attackDelay = 1.5,
+            enableRandomDelay = true,
+            randomDelayRange = {0.1, 0.3},
+            maxAttackDistance = 30
+        }
+
+        local attackStats = {
+            totalSent = 0,
+            successfulAttacks = 0,
+            failedAttacks = 0,
+            startTime = tick(),
+            lastAttackTime = 0
+        }
+
+        local function getPing()
+            local success, ping = pcall(function()
+                return game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+            end)
+            return success and ping or 0
+        end
+
+        local function isGameEnded()
+            local success, result = pcall(function()
+                local endScreen = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("MainScreen_Sibling"):FindFirstChild("EndScreen")
+                return endScreen and (endScreen.Visible or endScreen.Enabled)
+            end)
+            return success and result
+        end
+
+        local function handleGameEnd()
+            if not isGameEnded() then return false end
+            
+            print("🏁 Game ended! Handling end screen...")
+            task.wait(2)
+            
+            local success = pcall(function()
+                if _G.End == "Replay" then
+                    print("🔄 Selecting Replay...")
+                    s.SelectedObject = game:GetService("Players").LocalPlayer.PlayerGui.MainScreen_Sibling.EndScreen.List.buttons.replay
+                    v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                    v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                elseif _G.End == "Back" then
+                    print("🏠 Selecting Back to Lobby...")
+                    s.SelectedObject = game:GetService("Players").LocalPlayer.PlayerGui.MainScreen_Sibling.EndScreen.List.buttons.back
+                    v157:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                    v157:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                end
+            end)
+            
+            return true
+        end
+
+        local function sendRawPacket(bufferString, timestamp)
+            local success = pcall(function()
+                local args = {
+                    buffer.fromstring(bufferString),
+                    {timestamp or workspace:GetServerTimeNow()}
+                }
+                ReplicatedStorage:WaitForChild("ByteNetReliable"):FireServer(unpack(args))
+            end)
+            
+            if success then
+                attackStats.totalSent = attackStats.totalSent + 1
+                attackStats.successfulAttacks = attackStats.successfulAttacks + 1
+                attackStats.lastAttackTime = tick()
+                return true
+            else
+                attackStats.failedAttacks = attackStats.failedAttacks + 1
+                return false
+            end
+        end
+
+        local function openAllDoors()
+            local doorsFolder = workspace:WaitForChild("School"):WaitForChild("Doors")
+            if not doorsFolder then return false end
+
+            local successCount = 0
+            local lastPacketTime = 0
+
+            for _, door in pairs(doorsFolder:GetChildren()) do
+                if door:IsA("Model") and door:FindFirstChild("Root") then
+                    local success = pcall(function()
+                        local args = {
+                            buffer.fromstring("\a\001"),
+                            {door}
+                        }
+                        ReplicatedStorage:WaitForChild("ByteNetReliable"):FireServer(unpack(args))
+                    end)
+
+                    if success then
+                        successCount = successCount + 1
+                    end
+                    task.wait(0.1)
+                end
+            end
+            return successCount > 0
+        end
+
+        local function hasActiveObjectives()
+            local success, result = pcall(function()
+                local rooftopBoss = workspace.School.Rooms:FindFirstChild("RooftopBoss")
+                if not rooftopBoss then return false end
+
+                local objectives = {"RadioObjective", "HeliObjective"}
+                for _, objName in ipairs(objectives) do
+                    local objective = rooftopBoss:FindFirstChild(objName)
+                    if objective and objective:FindFirstChild("ProximityPrompt") then
+                        return true
+                    end
+                end
+                return false
+            end)
+            return success and result
+        end
+
+        local function getObjectiveText()
+            local success, text = pcall(function()
+                return game:GetService("Players").LocalPlayer.PlayerGui.MainScreen.ObjectiveDisplay.ObjectiveElement.List.Description.Text
+            end)
+            return success and text or ""
+        end
+
+        local function enableNoclip()
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            if character then
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end
+
+        local function continuousObjectiveLoop()
+            print("🎯 Starting continuous objective interaction loop")
+            
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            if not character or not character:FindFirstChild("HumanoidRootPart") then
+                return
+            end
+
+            local rooftopBoss = workspace.School.Rooms:FindFirstChild("RooftopBoss")
+            if not rooftopBoss then return end
+
+            local radioObjective = rooftopBoss:FindFirstChild("RadioObjective")
+            if radioObjective then
+                repeat
+                    pcall(function()
+                        character.HumanoidRootPart.CFrame = radioObjective.CFrame
+                        local radioPrompt = rooftopBoss:FindFirstChild("RadioObjective") and rooftopBoss.RadioObjective:FindFirstChild("ProximityPrompt")
+                        if radioPrompt then
+                            fireproximityprompt(radioPrompt)
+                        end
+                    end)
+                    task.wait(0.2)
+                until getObjectiveText() == "SURVIVE UNTIL HELP ARRIVES" or isGameEnded()
+            end
+
+            if getObjectiveText() == "SURVIVE UNTIL HELP ARRIVES" and not isGameEnded() then
+                enableNoclip()
+                
+                local heliObjective = rooftopBoss:FindFirstChild("HeliObjective")
+                if heliObjective then
+                    repeat
+                        pcall(function()
+                            enableNoclip()
+                            character.HumanoidRootPart.CFrame = heliObjective.CFrame
+                            local heliPrompt = rooftopBoss:FindFirstChild("HeliObjective") and rooftopBoss.HeliObjective:FindFirstChild("ProximityPrompt")
+                            if heliPrompt then
+                                fireproximityprompt(heliPrompt)
+                            end
+                        end)
+                        task.wait(0.2)
+                    until isGameEnded()
+                end
+            end
+            
+            if isGameEnded() then
+                handleGameEnd()
+            end
+        end
+
+        local function atkillzombie()
+            local currentPing = getPing()
+            if currentPing > 500 then
+                mouse1click()
+            else
+                _G.CombatAttacker.sendRaw("\b\003\001")
+                task.wait(0.05)
+                _G.CombatAttacker.sendRaw("\b\006\001")
+                task.wait(0.05)
+                _G.CombatAttacker.sendRaw("\b\005\001")
+                task.wait(0.05)
+                _G.CombatAttacker.sendRaw("\b\004\001")
+                task.wait(0.05)
+            end
+        end
+
+        -- Drop item collector
+        spawn(function()
+            while task.wait(0.1) do 
+                if isGameEnded() then
+                    handleGameEnd()
+                    break
+                end
+                
+                if _G.takedropitem then
+                    pcall(function()
+                        local player = game.Players.LocalPlayer
+                        local character = player.Character
+                        if character and character:FindFirstChild("HumanoidRootPart") then
+                            for _, v in pairs(workspace.DropItems:GetChildren()) do 
+                                if v.Name == "dropitem" and not v:GetAttribute("Collected") then 
+                                    v.CanCollide = false
+                                    v.CFrame = character.HumanoidRootPart.CFrame
+                                    v:SetAttribute("Collected", true)
+                                end
+                            end
+                        end
+                    end)
+                end
+            end
+        end)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        local initialLevelTitle = game:GetService("Players").LocalPlayer.PlayerGui.MainScreen.LevelTitle.Text
+
+        -- Main zombie killing loop
+        spawn(function()
+            while task.wait(0.5) do 
+                if isGameEnded() then
+                    handleGameEnd()
+                    break
+                end
+                
+                -- Death check
+                local success, result = pcall(function()
+                    local name = game.Players.LocalPlayer.Name 
+                    if workspace[name] and workspace[name].Humanoid and workspace[name].Humanoid.Health <= 0 then
+                        return false
+                    end
+                    return true
+                end)
+                if not success or not result then
+                    game:GetService("TeleportService"):Teleport(103754275310547)
+                    return
+                end
+                
+                if _G.killzombie then
+                    if hasActiveObjectives() then
+                        continuousObjectiveLoop()
+                        break
+                    else
+                        openAllDoors()
+                        for _, v in pairs(workspace.Entities.Zombie:GetChildren()) do 
+                            if isGameEnded() then
+                                handleGameEnd()
+                                break
+                            end
+                            
+                            if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Head") and v.Head:FindFirstChild("EntityHealth") then 
+                                local healthBar = v.Head.EntityHealth:FindFirstChild("HealthBar") and v.Head.EntityHealth.HealthBar:FindFirstChild("Bar")
+                                
+                                repeat
+                                    task.wait()
+                                    if isGameEnded() then
+                                        handleGameEnd()
+                                        break
+                                    end
+                                    
+                                    pcall(function()
+                                        humanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+                                        atkillzombie()
+                                    end)
+                                    local args = {
+                                        buffer.fromstring("\f")
+                                    }
+                                    game:GetService("ReplicatedStorage"):WaitForChild("ByteNetReliable"):FireServer(unpack(args))
+                                until not _G.killzombie or not v.Parent or not v.HumanoidRootPart or not workspace.Entities.Zombie:FindFirstChild(v.Name) or (healthBar and healthBar.Size == UDim2.new(0, 0, 1, 0)) or hasActiveObjectives() or isGameEnded()
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+
+        _G.CombatAttacker = {
+            config = ATTACK_CONFIG,
+            stats = attackStats,
+            sendRaw = sendRawPacket,
+            setDelay = function(delay)
+                ATTACK_CONFIG.attackDelay = delay
+                print("⚙️ Attack delay set to", delay, "seconds")
+            end
+        }
+    end
+
+    AutoKill()
+    coroutine.wrap(AutoKill)()
+end
+
+print("🎮 Script loaded successfully!")
+print("📝 Current config:")
+print("   - อาวุธที่ต้องการ:", table.concat(config.เลือกอาวุธ, ", "))
+print("   - Perk ที่ต้องการ:", table.concat(config.เลือกเปิค, ", "))
+print("   - หลังจบเกม:", config.เลือกreplayหรือback)
+print("   - แมพ:", config.เลือกแมพ)
+print("   - ความยาก:", config.เลือกความยาก)
