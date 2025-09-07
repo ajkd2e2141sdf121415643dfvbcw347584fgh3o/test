@@ -15,12 +15,12 @@ if game.PlaceId == 103754275310547 then
     
     -- Auto Join Configuration  
     _G.AutoJoin = false
-    _G.SelectMap = config.เลือกแมพ
-    _G.SelectMode = config.เลือกความยาก
+    _G.SelectMap = config.Map
+    _G.SelectMode = config.Difficult
     
     -- Set target items from config
-    local targetWeapons = config.เลือกอาวุธ
-    local targetPerks = config.เลือกเปิค
+    local targetWeapons = config.Weapon
+    local targetPerks = config.Perk
 
     local v157 = game:GetService("VirtualInputManager")
     local s = game:GetService("GuiService")
@@ -453,7 +453,7 @@ if game.PlaceId == 103754275310547 then
     end
 else
     -- Load AutoKill module for other games
-    _G.End = config.เลือกreplayหรือback
+    _G.End = config.Paly
     _G.killzombie = true
     _G.takedropitem = true
     
@@ -770,11 +770,3 @@ else
     AutoKill()
     coroutine.wrap(AutoKill)()
 end
-
-print("🎮 Script loaded successfully!")
-print("📝 Current config:")
-print("   - อาวุธที่ต้องการ:", table.concat(config.เลือกอาวุธ, ", "))
-print("   - Perk ที่ต้องการ:", table.concat(config.เลือกเปิค, ", "))
-print("   - หลังจบเกม:", config.เลือกreplayหรือback)
-print("   - แมพ:", config.เลือกแมพ)
-print("   - ความยาก:", config.เลือกความยาก)
