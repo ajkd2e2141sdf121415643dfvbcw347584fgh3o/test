@@ -1314,7 +1314,7 @@ end)
     local diamondSymbol = Instance.new("TextLabel")
     diamondSymbol.Size = UDim2.new(1, 0, 1, 0)
     diamondSymbol.BackgroundTransparency = 1
-    diamondSymbol.Text = _G.emoji.diamond 
+    diamondSymbol.Text = _G.emoji.diamond ..""
     diamondSymbol.TextColor3 = Color3.fromRGB(255, 255, 255)
     diamondSymbol.TextScaled = true
     diamondSymbol.Font = Enum.Font.SourceSansBold
