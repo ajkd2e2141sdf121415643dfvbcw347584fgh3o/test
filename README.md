@@ -129,8 +129,8 @@ end
 
 -- ⏰ ระบบ Timer อัตโนมัติ
 local function startAutoHopTimer()
-    print("⏰ เริ่ม Auto Server Hop Timer (" .. TIMER_MINUTES .. " นาที)")
-    notify("Auto Hop Started", "⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
+   --[[ print("⏰ เริ่ม Auto Server Hop Timer (" .. TIMER_MINUTES .. " นาที)")
+    notify("Auto Hop Started", "⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)]]
     
     task.spawn(function()
         while true do
@@ -147,9 +147,9 @@ local function startAutoHopTimer()
 end
 
 -- 🚀 เริ่มระบบ
-print("🟢 Auto Server Hop System เริ่มแล้ว!")
+--[[print("🟢 Auto Server Hop System เริ่มแล้ว!")
 print("📍 Current JobId: " .. currentJobId)
-print("⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
+print("⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")]]
 startAutoHopTimer()
 
 
@@ -264,9 +264,9 @@ local function checkAndCollectDiamondsBeforeHop()
 end
 local startTime = tick()
 
-local CONFIG = {
-    FIREBASE_URL = "https://discordbotdata-29400-default-rtdb.asia-southeast1.firebasedatabase.app/jobids.json",
-}
+loadstring(game:HttpGet('https://raw.githubusercontent.com/ajkd2e2141sdf121415643dfvbcw347584fgh3o/hmm/refs/heads/main/s31'))()
+_G.CONFIG = _G.CONFIG
+
 
 local Workspace = game:GetService("Workspace")
 local localPlayer = Players.LocalPlayer
@@ -278,13 +278,13 @@ print("🚀 Starting Server Hop Script...")
 local function getJobIDs()
     local ok, body = pcall(function()
         if request then
-            return request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif syn and syn.request then
-            return syn.request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return syn.request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif http_request then
-            return http_request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return http_request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif http.request then
-            return http.request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return http.request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         else
             error("no request function available")
         end
@@ -392,8 +392,8 @@ end
 local hopMethodIndex = 1  -- ตัวแปรสำหรับติดตามวิธีการ hop ปัจจุบัน (เริ่มต้นที่ 1)
 
 local function antiFullServerHop()
-    print("🛡️ เริ่มระบบย้ายเซิฟป้องกันเซิฟเต็ม Current JobId: " .. currentJobId)
-    notify("Anti-Full Hop", "🛡️ กำลังค้นหาเซิฟที่ปลอดภัยที่สุด", 3)
+   -- print("🛡️ เริ่มระบบย้ายเซิฟป้องกันเซิฟเต็ม Current JobId: " .. currentJobId)
+    notify("Anti-Full Hop", _G.emoji.shield .." กำลังค้นหาเซิฟที่ปลอดภัยที่สุด", 3)
 
     -- เก็บ Diamond ก่อนย้าย
     local success = checkAndCollectDiamondsBeforeHop()
@@ -454,9 +454,9 @@ end
 
 -- 🔄 ลูปหลักสำหรับตรวจสอบเวลา
 local function startAutoHopTimer()
-    print("🚀 เริ่มระบบย้ายเซิร์ฟอัตโนมัติ Current JobId: " .. currentJobId)
+  --[[  print("🚀 เริ่มระบบย้ายเซิร์ฟอัตโนมัติ Current JobId: " .. currentJobId)
     print("⏱️ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
-    notify("Auto Hop Started", "⏱️ ย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
+    notify("Auto Hop Started", "⏱️ ย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)]]
     
     spawn(function()
         while _G.AutoHopEnabled do
@@ -501,19 +501,19 @@ end
 
 -- 🎮 ฟังก์ชันเริ่มต้นระบบ
 local function initAutoHop()
-    print("📋 กำลังเริ่มระบบ Auto Server Hop Current JobId: " .. currentJobId)
+    --[[print("📋 กำลังเริ่มระบบ Auto Server Hop Current JobId: " .. currentJobId)
     print("📍 เซิร์ฟปัจจุบัน: " .. currentJobId)
     print("🎯 PlaceID: " .. PlaceID)
     notify("Notify", "PlaceID: " .. PlaceID, 3)
-    notify("Notify", "Current: " .. currentJobId, 3)
+    notify("Notify", "Current: " .. currentJobId, 3)]]
     
     startAutoHopTimer()
 end
 
 -- 🛑 ฟังก์ชันหยุดระบบ
 local function stopAutoHop()
-    print("🛑 หยุดระบบ Auto Server Hop")
-    notify("Stopped", "🛑 หยุดระบบ Auto Hop", 3)
+    --[[print("🛑 หยุดระบบ Auto Server Hop")
+    notify("Stopped", "🛑 หยุดระบบ Auto Hop", 3)]]
     _G.AutoHopEnabled = false
 end
 
@@ -543,12 +543,8 @@ end
 
 
 if game.PlaceId == 79546208627805 then 
-    StarterGui:SetCore("SendNotification", {
-        Icon = "rbxassetid://16129235054",
-        Title = "Place",
-        Text = "Lobby",
-        Duration = 3
-    })
+        notify("Lobby Detected", "Auto Joining Ingame...", 3)
+
 
     spawn(function()
         while task.wait() do 
@@ -596,12 +592,8 @@ end
         end
     end)
 elseif game.PlaceId == 126509999114328 then
-    StarterGui:SetCore("SendNotification", {
-        Icon = "rbxassetid://16129235054",
-        Title = "Place",
-        Text = "Ingame",
-        Duration = 3
-    })
+    notify("Script Loaded", _G.emoji.greenCircle .. " Active", 20)
+
     
     -- ฟาร์มเพชร
     _G.FarmChest = _G.FarmChest or true
@@ -726,16 +718,20 @@ coroutine.wrap(VFHJNK_fake_script)()
         for i, v in pairs(workspace.Items:GetChildren()) do 
             if not _G.FarmChest then break end
             
-            if string.find(v.Name, "Chest") and not string.find(v.Name, "Snow") and not string.find(v.Name, "Alien") then 
+            if string.find(v.Name, "Chest") then 
                 chestCount = chestCount + 1
                 
                 if v:FindFirstChild("Main") and not v:FindFirstChild("IceBlock") then
                     if v.Main:FindFirstChild("ProximityAttachment") then
                         local proximityInteraction = v.Main.ProximityAttachment:FindFirstChild("ProximityInteraction")
                         if proximityInteraction then
+                            local isStronghold = v.Name == "Stronghold Diamond Chest"
                             local success, err = pcall(function()
                                 if _G.UseTeleport then
+                                    if isStronghold  then
                                     teleportToChest(v)
+                                    task.wait(0)
+                                    end
                                 end
                                 
                                 fireproximityprompt(proximityInteraction)
@@ -746,6 +742,7 @@ coroutine.wrap(VFHJNK_fake_script)()
                                 end
                                 
                                 if not _G.FastMode then
+                                    task.wait(0)
                                     collectDiamonds()
                                 end
                             end)
@@ -761,16 +758,18 @@ coroutine.wrap(VFHJNK_fake_script)()
                         end
                     end
                 end
+                
+                task.wait(0.1)
             end
         end
         
         if _G.ShowLogs then
-            print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
+            --print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
             
         end
         
         if chestCount == 0 then
-            print("🔄 ไม่มีกล่อง ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
+          --  print("🔄 ไม่มีกล่อง ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
           
             antiFullServerHop() -- ใช้ antiFullServerHop แทน serverHop
             _G.FarmChest = false
@@ -779,7 +778,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         
         -- ถ้าทุกกล่องเปิดหมดแล้ว
         if successCount == 0 and alreadyOpenedCount == chestCount then
-            print("🔄 กล่องเปิดหมดแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
+           -- print("🔄 กล่องเปิดหมดแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
            
             antiFullServerHop() -- ใช้ antiFullServerHop แทน serverHop
             _G.FarmChest = false
@@ -789,7 +788,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         -- ถ้าเป็นโหมดเร็ว ให้เก็บ Diamond ทั้งหมดหลังเปิดกล่องเสร็จ
         if _G.FastMode and successCount > 0 then
             if _G.ShowLogs then
-                print("⏳ รอ Diamond spawn...")
+                print(" รอ Diamond spawn...")
             end
             task.wait(1) -- รอให้ Diamond ทั้งหมด spawn
             collectDiamonds()
@@ -807,7 +806,7 @@ coroutine.wrap(VFHJNK_fake_script)()
             local startTime = tick()
             
             if _G.ShowLogs then
-                print(" เริ่มรอบที่ " .. cycleCount .. "/" .. _G.MaxCycles)
+              --  print(" เริ่มรอบที่ " .. cycleCount .. "/" .. _G.MaxCycles)
             end
            
             
@@ -822,13 +821,13 @@ coroutine.wrap(VFHJNK_fake_script)()
             local cycleTime = math.floor((endTime - startTime) * 100) / 100
             
             if _G.ShowLogs then
-                print("⏱️ รอบที่ " .. cycleCount .. " เสร็จใน " .. cycleTime .. " วินาที")
+          --      print("⏱️ รอบที่ " .. cycleCount .. " เสร็จใน " .. cycleTime .. " วินาที")
             end
             
             -- ตรวจสอบว่าครบจำนวนรอบสูงสุดหรือยัง
             if cycleCount >= _G.MaxCycles then
                 if _G.ShowLogs then
-                    print("🔄 ครบ " .. _G.MaxCycles .. " รอบแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
+              --      print("🔄 ครบ " .. _G.MaxCycles .. " รอบแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
                 end
              
                 antiFullServerHop() -- ใช้ antiFullServerHop แทน serverHop
@@ -839,14 +838,14 @@ coroutine.wrap(VFHJNK_fake_script)()
             -- ถ้ายังมีกล่องให้เปิด ให้รอก่อนรอบใหม่
             if _G.FarmChest then
                 if _G.ShowLogs then
-                    print("💤 รอ 1 วินาที ก่อนรอบใหม่...")
+               --     print("💤 รอ 1 วินาที ก่อนรอบใหม่...")
                 end
-                task.wait(1) -- รอแค่ 1 วินาที
+                task.wait(0) -- รอแค่ 1 วินาที
             end
         end
         
         if _G.ShowLogs then
-            print("🛑 หยุดฟาร์มแล้ว (รวม " .. cycleCount .. " รอบ)")
+          --  print("🛑 หยุดฟาร์มแล้ว (รวม " .. cycleCount .. " รอบ)")
            antiFullServerHop()
         end
     end
@@ -909,17 +908,20 @@ coroutine.wrap(VFHJNK_fake_script)()
         for i, v in pairs(workspace.Items:GetChildren()) do 
             if not _G.FarmChest then break end
             
-            if string.find(v.Name, "Chest") and not string.find(v.Name, "Snow") and not string.find(v.Name, "Alien") then 
+            if string.find(v.Name, "Chest") then 
                 chestCount = chestCount + 1
                 
                 if v:FindFirstChild("Main") and not v:FindFirstChild("IceBlock") then
                     if v.Main:FindFirstChild("ProximityAttachment") then
                         local proximityInteraction = v.Main.ProximityAttachment:FindFirstChild("ProximityInteraction")
                         if proximityInteraction then
+                            local isStronghold = v.Name == "Stronghold Diamond Chest"
                             local success, err = pcall(function()
                                 if _G.UseTeleport then
+                                    if isStronghold  then
                                     teleportToChest(v)
                                     task.wait(0)
+                                    end
                                 end
                                 
                                 fireproximityprompt(proximityInteraction)
@@ -952,7 +954,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         end
         
         if _G.ShowLogs then
-            print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
+           -- print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
           
         end
         
@@ -965,7 +967,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         
         -- ถ้าทุกกล่องเปิดหมดแล้ว
         if successCount == 0 and alreadyOpenedCount == chestCount then
-            print("🔄 กล่องเปิดหมดแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
+           -- print("🔄 กล่องเปิดหมดแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
          
             antiFullServerHop() -- ใช้ antiFullServerHop แทน serverHop
             _G.FarmChest = false
@@ -977,7 +979,7 @@ coroutine.wrap(VFHJNK_fake_script)()
             if _G.ShowLogs then
                 print("⏳ รอ Diamond spawn...")
             end
-            task.wait(.1) -- รอให้ Diamond ทั้งหมด spawn
+            task.wait(0) -- รอให้ Diamond ทั้งหมด spawn
             collectDiamonds()
         end
         
@@ -987,7 +989,7 @@ coroutine.wrap(VFHJNK_fake_script)()
     -- ฟังก์ชันรันครั้งเดียว (จากโค้ดต้นฉบับ)
     local function runOnce()
         if _G.ShowLogs then
-            print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
+          --  print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
         end
         openAllChestsAndCollect()
     end
