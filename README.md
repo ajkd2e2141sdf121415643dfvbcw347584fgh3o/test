@@ -1,4 +1,3 @@
---v6
 repeat wait() until game:IsLoaded() 
 _G.FarmChest = true
 local Players = game:GetService("Players")
@@ -114,10 +113,10 @@ while task.wait() do
         end
     end
 end)
---[[
-loadstring(game:HttpGet('https://raw.githubusercontent.com/ajkd2e2141sdf121415643dfvbcw347584fgh3o/hmm/refs/heads/main/s3'))()
-_G.CONFIG = _G.CONFIG]]
 
+local url = "https://raw.githubusercontent.com/7878wqz/sc1/main/emoji"
+    local source = game:HttpGet(url)
+    loadstring(source)()
 -- 🔔 แสดงการแจ้งเตือน
 local function notify(title, message, duration)
     pcall(function()
@@ -131,27 +130,27 @@ end
 
 -- ⏰ ระบบ Timer อัตโนมัติ
 local function startAutoHopTimer()
-    print("⏰ เริ่ม Auto Server Hop Timer (" .. TIMER_MINUTES .. " นาที)")
-    notify("Auto Hop Started", "⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
+    --print("⏰ เริ่ม Auto Server Hop Timer (" .. TIMER_MINUTES .. " นาที)")
+    --notify("Auto Hop Started", "⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
     
     task.spawn(function()
         while true do
             task.wait(TIMER_SECONDS)
             
             if not isHopping then
-                print("⏰ ถึงเวลาย้ายเซิร์ฟแล้ว!")
+            --    print("⏰ ถึงเวลาย้ายเซิร์ฟแล้ว!")
                 AutoServerHop()
             else
-                print("⚠️ กำลังย้ายเซิร์ฟอยู่ ข้ามรอบนี้")
+              --  print("⚠️ กำลังย้ายเซิร์ฟอยู่ ข้ามรอบนี้")
             end
         end
     end)
 end
 
 -- 🚀 เริ่มระบบ
-print("🟢 Auto Server Hop System เริ่มแล้ว!")
-print("📍 Current JobId: " .. currentJobId)
-print("⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
+--print("🟢 Auto Server Hop System เริ่มแล้ว!")
+--print("📍 Current JobId: " .. currentJobId)
+--print("⏰ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
 startAutoHopTimer()
 
 
@@ -169,13 +168,7 @@ local function collectDiamonds()
             end)
             
             if success and _G.ShowLogs then
-                print("✅ Collect Diamond Success! (" .. diamondCount .. ")\n✅ เก็บ Diamond สำเร็จ! (" .. diamondCount .. ")")
-                StarterGui:SetCore("SendNotification", {
-                    Icon = "rbxassetid://16129235054",
-                    Title = "แจ้งเตือน!",
-                    Text = "✅ Collect Diamond Success! (" .. diamondCount .. ")\n✅ เก็บ Diamond สำเร็จ! (" .. diamondCount .. ")",
-                    Duration = 5
-                })
+               notify(_G.emoji.diamond .. "",diamondCount .. "!", 1)
             elseif not success and _G.ShowLogs then
                 warn("❌ Collect Diamond Failed: " .. tostring(err))
             end
@@ -185,7 +178,7 @@ local function collectDiamonds()
     end
     
     if diamondCount > 0 and _G.ShowLogs then
-        print("💎 รวมเก็บ Diamond ได้: " .. diamondCount .. " อัน")
+        notify(_G.emoji.diamond .. "",diamondCount .. "!", 1)
     end
     
     return diamondCount
@@ -252,12 +245,12 @@ local function checkAndCollectDiamondsBeforeHop()
     
     if diamondCount > 0 then
         if _G.ShowLogs then
-            warn("⚠️ ยังคงมี Diamond " .. diamondCount .. " อันเหลืออยู่")
+          --  warn("⚠️ ยังคงมี Diamond " .. diamondCount .. " อันเหลืออยู่")
         end
        
     else
         if _G.ShowLogs then
-            print("✅ ตรวจสอบแล้ว ไม่มี Diamond เหลือ")
+          --  print("✅ ตรวจสอบแล้ว ไม่มี Diamond เหลือ")
         end
       
     end
@@ -266,9 +259,6 @@ local function checkAndCollectDiamondsBeforeHop()
 end
 local startTime = tick()
 
-local CONFIG = {
-    FIREBASE_URL = "https://discordbotdata-29400-default-rtdb.asia-southeast1.firebasedatabase.app/jobids.json",
-}
 
 local Workspace = game:GetService("Workspace")
 local localPlayer = Players.LocalPlayer
@@ -280,13 +270,13 @@ print("🚀 Starting Server Hop Script...")
 local function getJobIDs()
     local ok, body = pcall(function()
         if request then
-            return request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif syn and syn.request then
-            return syn.request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return syn.request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif http_request then
-            return http_request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return http_request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         elseif http.request then
-            return http.request({Url = CONFIG.FIREBASE_URL, Method = "GET"}).Body
+            return http.request({Url = _G.CONFIG.FIREBASE_URL, Method = "GET"}).Body
         else
             error("no request function available")
         end
@@ -395,7 +385,7 @@ local hopMethodIndex = 1  -- ตัวแปรสำหรับติดตา
 
 local function antiFullServerHop()
     print("🛡️ เริ่มระบบย้ายเซิฟป้องกันเซิฟเต็ม Current JobId: " .. currentJobId)
-    notify("Anti-Full Hop", "🛡️ กำลังค้นหาเซิฟที่ปลอดภัยที่สุด", 3)
+    notify("Anti-Full Hop", _G.emoji.shield .." กำลังค้นหาเซิฟที่ปลอดภัยที่สุด", 3)
 
     -- เก็บ Diamond ก่อนย้าย
     local success = checkAndCollectDiamondsBeforeHop()
@@ -456,9 +446,9 @@ end
 
 -- 🔄 ลูปหลักสำหรับตรวจสอบเวลา
 local function startAutoHopTimer()
-    print("🚀 เริ่มระบบย้ายเซิร์ฟอัตโนมัติ Current JobId: " .. currentJobId)
+   --[[print("🚀 เริ่มระบบย้ายเซิร์ฟอัตโนมัติ Current JobId: " .. currentJobId)
     print("⏱️ จะย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที")
-    notify("Auto Hop Started", "⏱️ ย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)
+    notify("Auto Hop Started", "⏱️ ย้ายเซิร์ฟทุก " .. TIMER_MINUTES .. " นาที", 5)]]
     
     spawn(function()
         while _G.AutoHopEnabled do
@@ -471,13 +461,13 @@ local function startAutoHopTimer()
             if remaining <= 10 and remaining > 0 then
                 print("⏰ " .. math.floor(remaining) .. " วินาที...")
                 if remaining <= 3 then
-                    notify("Countdown", "⏰ " .. math.floor(remaining) .. " วินาที", 1)
+                    notify("Countdown", "⏰ " .. math.floor(remaining) .. " S", 1)
                 end
             end
             
             if remaining <= 0 then
                 if not isHopping then
-                    print("🎯 ถึงเวลาย้ายเซิร์ฟ!")
+                    --print("🎯 ถึงเวลาย้ายเซิร์ฟ!")
                     AutoServerHop()
                     startTime = tick() -- รีเซ็ตเวลา
                 end
@@ -485,12 +475,12 @@ local function startAutoHopTimer()
                 task.wait()
                 
                 if game.JobId == currentJobId then
-                    print("⚠️ ยังอยู่เซิร์ฟเดิม ลองใหม่ใน 5 วินาที... Current: " .. game.JobId)
-                    notify("Retry", "⚠️ ลองใหม่ใน 5 วินาที", 3)
+                --    print("⚠️ ยังอยู่เซิร์ฟเดิม ลองใหม่ใน 5 วินาที... Current: " .. game.JobId)
+               --     notify("Retry", "⚠️ ลองใหม่ใน 5 วินาที", 3)
                     isHopping = false
                     task.wait()
                 else
-                    print("✅ ย้ายสำเร็จ! JobId ใหม่: " .. game.JobId)
+                 --   print("✅ ย้ายสำเร็จ! JobId ใหม่: " .. game.JobId)
                     currentJobId = game.JobId -- อัพเดท (แม้จะอัตโนมัติ แต่ยืนยัน)
                     startTime = tick()
                 end
@@ -503,19 +493,19 @@ end
 
 -- 🎮 ฟังก์ชันเริ่มต้นระบบ
 local function initAutoHop()
-    print("📋 กำลังเริ่มระบบ Auto Server Hop Current JobId: " .. currentJobId)
+ --[[print("📋 กำลังเริ่มระบบ Auto Server Hop Current JobId: " .. currentJobId)
     print("📍 เซิร์ฟปัจจุบัน: " .. currentJobId)
     print("🎯 PlaceID: " .. PlaceID)
     notify("Notify", "PlaceID: " .. PlaceID, 3)
-    notify("Notify", "Current: " .. currentJobId, 3)
+    notify("Notify", "Current: " .. currentJobId, 3)]]
     
     startAutoHopTimer()
 end
 
 -- 🛑 ฟังก์ชันหยุดระบบ
 local function stopAutoHop()
-    print("🛑 หยุดระบบ Auto Server Hop")
-    notify("Stopped", "🛑 หยุดระบบ Auto Hop", 3)
+  --[[ print("🛑 หยุดระบบ Auto Server Hop")
+    notify("Stopped", "🛑 หยุดระบบ Auto Hop", 3)]]
     _G.AutoHopEnabled = false
 end
 
@@ -551,7 +541,7 @@ if game.PlaceId == 79546208627805 then
         Text = "Lobby",
         Duration = 3
     })
-
+notify("Lobby Detected", "Auto Joining Ingame...", 3)
     spawn(function()
         while task.wait() do 
             if _G.FarmChest then 
@@ -604,7 +594,7 @@ elseif game.PlaceId == 126509999114328 then
         Text = "Ingame",
         Duration = 3
     })
-    
+     notify("Script Loaded", _G.emoji.greenCircle .. " Active", 20)
     -- ฟาร์มเพชร
     _G.FarmChest = _G.FarmChest or true
     _G.FastMode = _G.FastMode or true
@@ -809,7 +799,7 @@ coroutine.wrap(VFHJNK_fake_script)()
             local startTime = tick()
             
             if _G.ShowLogs then
-                print(" เริ่มรอบที่ " .. cycleCount .. "/" .. _G.MaxCycles)
+              --  print(" เริ่มรอบที่ " .. cycleCount .. "/" .. _G.MaxCycles)
             end
            
             
@@ -824,13 +814,13 @@ coroutine.wrap(VFHJNK_fake_script)()
             local cycleTime = math.floor((endTime - startTime) * 100) / 100
             
             if _G.ShowLogs then
-                print("⏱️ รอบที่ " .. cycleCount .. " เสร็จใน " .. cycleTime .. " วินาที")
+           --     print("⏱️ รอบที่ " .. cycleCount .. " เสร็จใน " .. cycleTime .. " วินาที")
             end
             
             -- ตรวจสอบว่าครบจำนวนรอบสูงสุดหรือยัง
             if cycleCount >= _G.MaxCycles then
                 if _G.ShowLogs then
-                    print("🔄 ครบ " .. _G.MaxCycles .. " รอบแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
+              --      print("🔄 ครบ " .. _G.MaxCycles .. " รอบแล้ว ตรวจสอบ Diamond ก่อนย้ายเซิฟ")
                 end
              
                 antiFullServerHop() -- ใช้ antiFullServerHop แทน serverHop
@@ -848,7 +838,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         end
         
         if _G.ShowLogs then
-            print("🛑 หยุดฟาร์มแล้ว (รวม " .. cycleCount .. " รอบ)")
+           -- print("🛑 หยุดฟาร์มแล้ว (รวม " .. cycleCount .. " รอบ)")
            
         end
     end
@@ -856,7 +846,7 @@ coroutine.wrap(VFHJNK_fake_script)()
     -- ฟังก์ชันรันครั้งเดียว (จากโค้ดต้นฉบับ)
     local function runOnce()
         if _G.ShowLogs then
-            print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
+       --     print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
         end
         openAllChestsAndCollect()
     end
@@ -954,7 +944,7 @@ coroutine.wrap(VFHJNK_fake_script)()
         end
         
         if _G.ShowLogs then
-            print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
+         --   print("📊 พบกล่อง: " .. chestCount .. " | เปิดได้: " .. successCount .. " | เปิดแล้ว: " .. alreadyOpenedCount)
           
         end
         
@@ -989,7 +979,7 @@ coroutine.wrap(VFHJNK_fake_script)()
     -- ฟังก์ชันรันครั้งเดียว (จากโค้ดต้นฉบับ)
     local function runOnce()
         if _G.ShowLogs then
-            print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
+        --    print("🎯 เปิดกล่องและเก็บ Diamond ครั้งเดียว")
         end
         openAllChestsAndCollect()
     end
@@ -1314,7 +1304,7 @@ end)
     local diamondSymbol = Instance.new("TextLabel")
     diamondSymbol.Size = UDim2.new(1, 0, 1, 0)
     diamondSymbol.BackgroundTransparency = 1
-    diamondSymbol.Text = _G.emoji.diamond ..""
+    diamondSymbol.Text = _G.emoji.diamond .. ""
     diamondSymbol.TextColor3 = Color3.fromRGB(255, 255, 255)
     diamondSymbol.TextScaled = true
     diamondSymbol.Font = Enum.Font.SourceSansBold
