@@ -11329,53 +11329,21 @@ local function makeGradient(topHex, bottomHex)
 end
 
 return {
-Blue = {
-	_id = "Blue",
+	Blue = {
+		_id = "Blue",
+
 		Dark = {
 			SwitchAccent = Color3.fromHex("#0A84FF"),
 			Selection = Color3.fromHex("#007AFF"),
 			SelectionFocused = Color3.fromHex("#3B9CFF"),
 			SelectionStroke = Color3.fromHex("#3B9CFF"),
 
-			Text = {
-				Primary = Color3.fromHex("#FFFFFF"),
-				Secondary = Color3.fromHex("#B8D8FF"),
-				Tertiary = Color3.fromHex("#7AAFFF"),
-			},
-
-			Background = Color3.fromHex("#0D1117"),
-			View = Color3.fromHex("#161B22"),
-			ViewBorder = Color3.fromHex("#1F6FEB"),
-
-			Sidebar = Color3.fromHex("#111827"),
-			Titlebar = Color3.fromHex("#1E293B"),
-
 			Toggle = {
 				SwitchOn = Color3.fromHex("#0A84FF"),
-				SwitchOff = Color3.fromHex("#3A3A3A"),
-				Knob = Color3.fromHex("#FFFFFF"),
-			},
-
-			Slider = {
-				Track = Color3.fromHex("#1E293B"),
-				Thumb = Color3.fromHex("#0A84FF"),
 			},
 
 			Button = {
-				FillPrimary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(82,156,255)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(0,122,255)),
-				}),
-
-				FillSecondary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(45,55,72)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(30,41,59)),
-				}),
-			},
-
-			MenuButton = {
-				IndicatorBackground = Color3.fromHex("#1E3A5F"),
-				MenuBackground = Color3.fromHex("#111827"),
+				FillPrimary = makeGradient("#529CFF", "#007AFF"),
 			},
 		},
 
@@ -11385,808 +11353,97 @@ Blue = {
 			SelectionFocused = Color3.fromHex("#3395FF"),
 			SelectionStroke = Color3.fromHex("#3395FF"),
 
-			Text = {
-				Primary = Color3.fromHex("#111827"),
-				Secondary = Color3.fromHex("#374151"),
-				Tertiary = Color3.fromHex("#6B7280"),
-			},
-
-			Background = Color3.fromHex("#F8FAFC"),
-			View = Color3.fromHex("#FFFFFF"),
-			ViewBorder = Color3.fromHex("#BFDBFE"),
-
-			Sidebar = Color3.fromHex("#EFF6FF"),
-			Titlebar = Color3.fromHex("#DBEAFE"),
-
 			Toggle = {
 				SwitchOn = Color3.fromHex("#007AFF"),
-				SwitchOff = Color3.fromHex("#D1D5DB"),
-				Knob = Color3.fromHex("#FFFFFF"),
-			},
-
-			Slider = {
-				Track = Color3.fromHex("#D6E4FF"),
-				Thumb = Color3.fromHex("#007AFF"),
 			},
 
 			Button = {
-				FillPrimary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(70,160,255)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(0,122,255)),
-				}),
-
-				FillSecondary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,255)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(240,244,248)),
-				}),
-			},
-
-			MenuButton = {
-				IndicatorBackground = Color3.fromHex("#D6E4FF"),
-				MenuBackground = Color3.fromHex("#FFFFFF"),
+				FillPrimary = makeGradient("#46A0FF", "#007AFF"),
 			},
 		},
-	}
-	
+	},
+
 	Purple = {
 		_id = "Purple",
+
 		Dark = {
 			SwitchAccent = Color3.fromHex("#BF5AF6"),
 			Selection = Color3.fromHex("#BF5AF6"),
 			SelectionFocused = Color3.fromHex("#CB7AF7"),
-		    SelectionStroke =  Color3.fromHex("#CB7AF7"),
-			Toggle = { SwitchOn = Color3.fromHex("#BF5AF6") },
-			Button = { FillPrimary = makeGradient("#CB7AF7", "#9A3BD6") },
+			SelectionStroke = Color3.fromHex("#CB7AF7"),
+
+			Toggle = {
+				SwitchOn = Color3.fromHex("#BF5AF6"),
+			},
+
+			Button = {
+				FillPrimary = makeGradient("#CB7AF7", "#9A3BD6"),
+			},
 		},
+
 		Light = {
 			SwitchAccent = Color3.fromHex("#AF52DE"),
 			Selection = Color3.fromHex("#AF52DE"),
 			SelectionFocused = Color3.fromHex("#BF74E4"),
-		    SelectionStroke =  Color3.fromHex("#BF74E4"),
-			Toggle = { SwitchOn = Color3.fromHex("#AF52DE") },
-			Button = { FillPrimary = makeGradient("#BF74E4", "#8B30BF") },
+			SelectionStroke = Color3.fromHex("#BF74E4"),
+
+			Toggle = {
+				SwitchOn = Color3.fromHex("#AF52DE"),
+			},
+
+			Button = {
+				FillPrimary = makeGradient("#BF74E4", "#8B30BF"),
+			},
 		},
 	},
 
-	Pink = {
-		_id = "Pink",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF375F"),
-			Selection = Color3.fromHex("#FF375F"),
-			SelectionFocused = Color3.fromHex("#FF5E7E"),
-		    SelectionStroke =  Color3.fromHex("#FF5E7E"),
-            Toggle = { SwitchOn = Color3.fromHex("#FF375F") },
-			Button = { FillPrimary = makeGradient("#FF5E7E", "#D82042") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FF2D55"),
-			Selection = Color3.fromHex("#FF2D55"),
-			SelectionFocused = Color3.fromHex("#FF5676"),
-		    SelectionStroke =  Color3.fromHex("#FF5676"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF2D55") },
-			Button = { FillPrimary = makeGradient("#FF5676", "#D8183B") },
-		},
-	},
-
-	Red = {
-		_id = "Red",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF453A"),
-			Selection = Color3.fromHex("#FF453A"),
-			SelectionFocused = Color3.fromHex("#FF6961"),
-		    SelectionStroke =  Color3.fromHex("#FF6961"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF453A") },
-			Button = { FillPrimary = makeGradient("#FF6961", "#D6251A") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FF3B30"),
-			Selection = Color3.fromHex("#FF3B30"),
-			SelectionFocused = Color3.fromHex("#FF6961"),
-		    SelectionStroke =  Color3.fromHex("#FF6961"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF3B30") },
-			Button = { FillPrimary = makeGradient("#FF6961", "#D62015") },
-		},
-	},
-
-	Orange = {
-		_id = "Orange",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF9F0A"),
-			Selection = Color3.fromHex("#FF9F0A"),
-			SelectionFocused = Color3.fromHex("#FFB340"),
-		    SelectionStroke =  Color3.fromHex("#FFB340"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF9F0A") },
-			Button = { FillPrimary = makeGradient("#FFB340", "#D67A00") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FF9500"),
-			Selection = Color3.fromHex("#FF9500"),
-			SelectionFocused = Color3.fromHex("#FFAB33"),
-		    SelectionStroke =  Color3.fromHex("#FFAB33"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF9500") },
-			Button = { FillPrimary = makeGradient("#FFAB33", "#D67000") },
-		},
-	},
-
-	Yellow = {
-		_id = "Yellow",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FFD60A"),
-			Selection = Color3.fromHex("#FFD60A"),
-			SelectionFocused = Color3.fromHex("#FFDF40"),
-		    SelectionStroke =  Color3.fromHex("#FFDF40"),
-			Toggle = { SwitchOn = Color3.fromHex("#FFD60A") },
-			Button = { FillPrimary = makeGradient("#FFDF40", "#D6AD00") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FFCC00"),
-			Selection = Color3.fromHex("#FFCC00"),
-			SelectionFocused = Color3.fromHex("#FFD633"),
-		    SelectionStroke =  Color3.fromHex("#FFD633"),
-			Toggle = { SwitchOn = Color3.fromHex("#FFCC00") },
-			Button = { FillPrimary = makeGradient("#FFD633", "#D6A300") },
-		},
-	},
-
-	Green = {
-		_id = "Green",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#32D74B"),
-			Selection = Color3.fromHex("#32D74B"),
-			SelectionFocused = Color3.fromHex("#56DF6B"),
-		    SelectionStroke =  Color3.fromHex("#56DF6B"),
-			Toggle = { SwitchOn = Color3.fromHex("#32D74B") },
-			Button = { FillPrimary = makeGradient("#56DF6B", "#22AB36") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#28CD41"),
-			Selection = Color3.fromHex("#28CD41"),
-			SelectionFocused = Color3.fromHex("#52D765"),
-		    SelectionStroke =  Color3.fromHex("#52D765"),
-			Toggle = { SwitchOn = Color3.fromHex("#28CD41") },
-			Button = { FillPrimary = makeGradient("#52D765", "#1CA32C") },
-		},
-	},
-
-	Graphite = {
-		_id = "Graphite",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#98989D"),
-			Selection = Color3.fromHex("#98989D"),
-			SelectionFocused = Color3.fromHex("#AFAFB4"),
-		    SelectionStroke =  Color3.fromHex("#AFAFB4"),
-			Toggle = { SwitchOn = Color3.fromHex("#98989D") },
-			Button = { FillPrimary = makeGradient("#AFAFB4", "#7B7B80") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#8E8E93"),
-			Selection = Color3.fromHex("#8E8E93"),
-			SelectionFocused = Color3.fromHex("#A6A6AA"),
-		    SelectionStroke =  Color3.fromHex("#A6A6AA"),
-			Toggle = { SwitchOn = Color3.fromHex("#8E8E93") },
-			Button = { FillPrimary = makeGradient("#A6A6AA", "#717176") },
-		},
-	},
-
-		Teal = {
-		_id = "Teal",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#64D2FF"),
-			Selection = Color3.fromHex("#64D2FF"),
-			SelectionFocused = Color3.fromHex("#89DDFF"),
-			SelectionStroke = Color3.fromHex("#89DDFF"),
-			Toggle = { SwitchOn = Color3.fromHex("#64D2FF") },
-			Button = { FillPrimary = makeGradient("#89DDFF", "#2AA9D9") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#5AC8FA"),
-			Selection = Color3.fromHex("#5AC8FA"),
-			SelectionFocused = Color3.fromHex("#7FD5FB"),
-			SelectionStroke = Color3.fromHex("#7FD5FB"),
-			Toggle = { SwitchOn = Color3.fromHex("#5AC8FA") },
-			Button = { FillPrimary = makeGradient("#7FD5FB", "#2AA9D9") },
-		},
-	},
-
-	Cyan = {
-		_id = "Cyan",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#70D7FF"),
-			Selection = Color3.fromHex("#70D7FF"),
-			SelectionFocused = Color3.fromHex("#95E3FF"),
-			SelectionStroke = Color3.fromHex("#95E3FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#70D7FF") },
-			Button = { FillPrimary = makeGradient("#95E3FF", "#3BAFD6") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#55D6FF"),
-			Selection = Color3.fromHex("#55D6FF"),
-			SelectionFocused = Color3.fromHex("#7BE0FF"),
-			SelectionStroke = Color3.fromHex("#7BE0FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#55D6FF") },
-			Button = { FillPrimary = makeGradient("#7BE0FF", "#2BA9D6") },
-		},
-	},
-
-	Mint = {
-		_id = "Mint",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#66E6C5"),
-			Selection = Color3.fromHex("#66E6C5"),
-			SelectionFocused = Color3.fromHex("#8DEDD5"),
-			SelectionStroke = Color3.fromHex("#8DEDD5"),
-			Toggle = { SwitchOn = Color3.fromHex("#66E6C5") },
-			Button = { FillPrimary = makeGradient("#8DEDD5", "#2AB08B") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#00C7BE"),
-			Selection = Color3.fromHex("#00C7BE"),
-			SelectionFocused = Color3.fromHex("#33D2CB"),
-			SelectionStroke = Color3.fromHex("#33D2CB"),
-			Toggle = { SwitchOn = Color3.fromHex("#00C7BE") },
-			Button = { FillPrimary = makeGradient("#33D2CB", "#009C95") },
-		},
-	},
-
-	Indigo = {
-		_id = "Indigo",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#7D7AFF"),
-			Selection = Color3.fromHex("#7D7AFF"),
-			SelectionFocused = Color3.fromHex("#9B99FF"),
-			SelectionStroke = Color3.fromHex("#9B99FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#7D7AFF") },
-			Button = { FillPrimary = makeGradient("#9B99FF", "#5754D6") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#5856D6"),
-			Selection = Color3.fromHex("#5856D6"),
-			SelectionFocused = Color3.fromHex("#7A78E0"),
-			SelectionStroke = Color3.fromHex("#7A78E0"),
-			Toggle = { SwitchOn = Color3.fromHex("#5856D6") },
-			Button = { FillPrimary = makeGradient("#7A78E0", "#3F3DB3") },
-		},
-	},
-
-	Brown = {
-		_id = "Brown",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#AC8E68"),
-			Selection = Color3.fromHex("#AC8E68"),
-			SelectionFocused = Color3.fromHex("#BDA284"),
-			SelectionStroke = Color3.fromHex("#BDA284"),
-			Toggle = { SwitchOn = Color3.fromHex("#AC8E68") },
-			Button = { FillPrimary = makeGradient("#BDA284", "#876947") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#A2845E"),
-			Selection = Color3.fromHex("#A2845E"),
-			SelectionFocused = Color3.fromHex("#B39876"),
-			SelectionStroke = Color3.fromHex("#B39876"),
-			Toggle = { SwitchOn = Color3.fromHex("#A2845E") },
-			Button = { FillPrimary = makeGradient("#B39876", "#806446") },
-		},
-	},
-
-		Aqua = {
-		_id = "Aqua",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#00E5FF"),
-			Selection = Color3.fromHex("#00E5FF"),
-			SelectionFocused = Color3.fromHex("#4DF0FF"),
-			SelectionStroke = Color3.fromHex("#4DF0FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#00E5FF") },
-			Button = { FillPrimary = makeGradient("#4DF0FF", "#00A8CC") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#00D4FF"),
-			Selection = Color3.fromHex("#00D4FF"),
-			SelectionFocused = Color3.fromHex("#40E2FF"),
-			SelectionStroke = Color3.fromHex("#40E2FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#00D4FF") },
-			Button = { FillPrimary = makeGradient("#40E2FF", "#0099CC") },
-		},
-	},
-
-	Sky = {
-		_id = "Sky",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#38BDF8"),
-			Selection = Color3.fromHex("#38BDF8"),
-			SelectionFocused = Color3.fromHex("#67CDF9"),
-			SelectionStroke = Color3.fromHex("#67CDF9"),
-			Toggle = { SwitchOn = Color3.fromHex("#38BDF8") },
-			Button = { FillPrimary = makeGradient("#67CDF9", "#0F88C2") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#0EA5E9"),
-			Selection = Color3.fromHex("#0EA5E9"),
-			SelectionFocused = Color3.fromHex("#45B9ED"),
-			SelectionStroke = Color3.fromHex("#45B9ED"),
-			Toggle = { SwitchOn = Color3.fromHex("#0EA5E9") },
-			Button = { FillPrimary = makeGradient("#45B9ED", "#0A7CB0") },
-		},
-	},
-
-	Lime = {
-		_id = "Lime",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#84CC16"),
-			Selection = Color3.fromHex("#84CC16"),
-			SelectionFocused = Color3.fromHex("#9ED645"),
-			SelectionStroke = Color3.fromHex("#9ED645"),
-			Toggle = { SwitchOn = Color3.fromHex("#84CC16") },
-			Button = { FillPrimary = makeGradient("#9ED645", "#5F970E") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#65A30D"),
-			Selection = Color3.fromHex("#65A30D"),
-			SelectionFocused = Color3.fromHex("#84BC3E"),
-			SelectionStroke = Color3.fromHex("#84BC3E"),
-			Toggle = { SwitchOn = Color3.fromHex("#65A30D") },
-			Button = { FillPrimary = makeGradient("#84BC3E", "#4C7A0A") },
-		},
-	},
-
-	Emerald = {
-		_id = "Emerald",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#10B981"),
-			Selection = Color3.fromHex("#10B981"),
-			SelectionFocused = Color3.fromHex("#3BC796"),
-			SelectionStroke = Color3.fromHex("#3BC796"),
-			Toggle = { SwitchOn = Color3.fromHex("#10B981") },
-			Button = { FillPrimary = makeGradient("#3BC796", "#0B8A60") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#059669"),
-			Selection = Color3.fromHex("#059669"),
-			SelectionFocused = Color3.fromHex("#2EAA82"),
-			SelectionStroke = Color3.fromHex("#2EAA82"),
-			Toggle = { SwitchOn = Color3.fromHex("#059669") },
-			Button = { FillPrimary = makeGradient("#2EAA82", "#046F4E") },
-		},
-	},
-
-	Violet = {
-		_id = "Violet",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#8B5CF6"),
-			Selection = Color3.fromHex("#8B5CF6"),
-			SelectionFocused = Color3.fromHex("#A27AF8"),
-			SelectionStroke = Color3.fromHex("#A27AF8"),
-			Toggle = { SwitchOn = Color3.fromHex("#8B5CF6") },
-			Button = { FillPrimary = makeGradient("#A27AF8", "#6238C7") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#7C3AED"),
-			Selection = Color3.fromHex("#7C3AED"),
-			SelectionFocused = Color3.fromHex("#9863F0"),
-			SelectionStroke = Color3.fromHex("#9863F0"),
-			Toggle = { SwitchOn = Color3.fromHex("#7C3AED") },
-			Button = { FillPrimary = makeGradient("#9863F0", "#5A28B0") },
-		},
-	},
-
-	Rose = {
-		_id = "Rose",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#F43F5E"),
-			Selection = Color3.fromHex("#F43F5E"),
-			SelectionFocused = Color3.fromHex("#F76781"),
-			SelectionStroke = Color3.fromHex("#F76781"),
-			Toggle = { SwitchOn = Color3.fromHex("#F43F5E") },
-			Button = { FillPrimary = makeGradient("#F76781", "#C71F3E") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#E11D48"),
-			Selection = Color3.fromHex("#E11D48"),
-			SelectionFocused = Color3.fromHex("#E94A6D"),
-			SelectionStroke = Color3.fromHex("#E94A6D"),
-			Toggle = { SwitchOn = Color3.fromHex("#E11D48") },
-			Button = { FillPrimary = makeGradient("#E94A6D", "#B01538") },
-		},
-	},
-
-	Gold = {
-		_id = "Gold",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FBBF24"),
-			Selection = Color3.fromHex("#FBBF24"),
-			SelectionFocused = Color3.fromHex("#FCCC51"),
-			SelectionStroke = Color3.fromHex("#FCCC51"),
-			Toggle = { SwitchOn = Color3.fromHex("#FBBF24") },
-			Button = { FillPrimary = makeGradient("#FCCC51", "#C99410") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#F59E0B"),
-			Selection = Color3.fromHex("#F59E0B"),
-			SelectionFocused = Color3.fromHex("#F7B53C"),
-			SelectionStroke = Color3.fromHex("#F7B53C"),
-			Toggle = { SwitchOn = Color3.fromHex("#F59E0B") },
-			Button = { FillPrimary = makeGradient("#F7B53C", "#C27A07") },
-		},
-	},
-
-	Silver = {
-		_id = "Silver",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#D1D5DB"),
-			Selection = Color3.fromHex("#D1D5DB"),
-			SelectionFocused = Color3.fromHex("#E0E3E7"),
-			SelectionStroke = Color3.fromHex("#E0E3E7"),
-			Toggle = { SwitchOn = Color3.fromHex("#D1D5DB") },
-			Button = { FillPrimary = makeGradient("#E0E3E7", "#A0A5AD") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#9CA3AF"),
-			Selection = Color3.fromHex("#9CA3AF"),
-			SelectionFocused = Color3.fromHex("#B1B7C0"),
-			SelectionStroke = Color3.fromHex("#B1B7C0"),
-			Toggle = { SwitchOn = Color3.fromHex("#9CA3AF") },
-			Button = { FillPrimary = makeGradient("#B1B7C0", "#767D88") },
-		},
-	},
-		Crimson = {
-		_id = "Crimson",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#DC143C"),
-			Selection = Color3.fromHex("#DC143C"),
-			SelectionFocused = Color3.fromHex("#E64063"),
-			SelectionStroke = Color3.fromHex("#E64063"),
-			Toggle = { SwitchOn = Color3.fromHex("#DC143C") },
-			Button = { FillPrimary = makeGradient("#E64063", "#A30D2A") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#C8102E"),
-			Selection = Color3.fromHex("#C8102E"),
-			SelectionFocused = Color3.fromHex("#D63E58"),
-			SelectionStroke = Color3.fromHex("#D63E58"),
-			Toggle = { SwitchOn = Color3.fromHex("#C8102E") },
-			Button = { FillPrimary = makeGradient("#D63E58", "#960B22") },
-		},
-	},
-
-	BloodRed = {
-		_id = "BloodRed",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#8B0000"),
-			Selection = Color3.fromHex("#8B0000"),
-			SelectionFocused = Color3.fromHex("#B22222"),
-			SelectionStroke = Color3.fromHex("#B22222"),
-			Toggle = { SwitchOn = Color3.fromHex("#8B0000") },
-			Button = { FillPrimary = makeGradient("#B22222", "#5C0000") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#A40000"),
-			Selection = Color3.fromHex("#A40000"),
-			SelectionFocused = Color3.fromHex("#C22F2F"),
-			SelectionStroke = Color3.fromHex("#C22F2F"),
-			Toggle = { SwitchOn = Color3.fromHex("#A40000") },
-			Button = { FillPrimary = makeGradient("#C22F2F", "#700000") },
-		},
-	},
-
-	NeonGreen = {
-		_id = "NeonGreen",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#39FF14"),
-			Selection = Color3.fromHex("#39FF14"),
-			SelectionFocused = Color3.fromHex("#66FF4A"),
-			SelectionStroke = Color3.fromHex("#66FF4A"),
-			Toggle = { SwitchOn = Color3.fromHex("#39FF14") },
-			Button = { FillPrimary = makeGradient("#66FF4A", "#1FB000") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#2EE600"),
-			Selection = Color3.fromHex("#2EE600"),
-			SelectionFocused = Color3.fromHex("#58F033"),
-			SelectionStroke = Color3.fromHex("#58F033"),
-			Toggle = { SwitchOn = Color3.fromHex("#2EE600") },
-			Button = { FillPrimary = makeGradient("#58F033", "#1C9400") },
-		},
-	},
-
-	CyberBlue = {
-		_id = "CyberBlue",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#00E5FF"),
-			Selection = Color3.fromHex("#00E5FF"),
-			SelectionFocused = Color3.fromHex("#4DF0FF"),
-			SelectionStroke = Color3.fromHex("#4DF0FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#00E5FF") },
-			Button = { FillPrimary = makeGradient("#4DF0FF", "#0095B3") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#00CFFF"),
-			Selection = Color3.fromHex("#00CFFF"),
-			SelectionFocused = Color3.fromHex("#3DDAFF"),
-			SelectionStroke = Color3.fromHex("#3DDAFF"),
-			Toggle = { SwitchOn = Color3.fromHex("#00CFFF") },
-			Button = { FillPrimary = makeGradient("#3DDAFF", "#0089A8") },
-		},
-	},
-
-	DeepPurple = {
-		_id = "DeepPurple",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#6A0DAD"),
-			Selection = Color3.fromHex("#6A0DAD"),
-			SelectionFocused = Color3.fromHex("#8B3DCA"),
-			SelectionStroke = Color3.fromHex("#8B3DCA"),
-			Toggle = { SwitchOn = Color3.fromHex("#6A0DAD") },
-			Button = { FillPrimary = makeGradient("#8B3DCA", "#49007A") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#7B1FA2"),
-			Selection = Color3.fromHex("#7B1FA2"),
-			SelectionFocused = Color3.fromHex("#9952BA"),
-			SelectionStroke = Color3.fromHex("#9952BA"),
-			Toggle = { SwitchOn = Color3.fromHex("#7B1FA2") },
-			Button = { FillPrimary = makeGradient("#9952BA", "#581575") },
-		},
-	},
-
-	Magenta = {
-		_id = "Magenta",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF00FF"),
-			Selection = Color3.fromHex("#FF00FF"),
-			SelectionFocused = Color3.fromHex("#FF4DFF"),
-			SelectionStroke = Color3.fromHex("#FF4DFF"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF00FF") },
-			Button = { FillPrimary = makeGradient("#FF4DFF", "#B300B3") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#E600E6"),
-			Selection = Color3.fromHex("#E600E6"),
-			SelectionFocused = Color3.fromHex("#F033F0"),
-			SelectionStroke = Color3.fromHex("#F033F0"),
-			Toggle = { SwitchOn = Color3.fromHex("#E600E6") },
-			Button = { FillPrimary = makeGradient("#F033F0", "#990099") },
-		},
-	},
-
-	Lava = {
-		_id = "Lava",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF4500"),
-			Selection = Color3.fromHex("#FF4500"),
-			SelectionFocused = Color3.fromHex("#FF6A33"),
-			SelectionStroke = Color3.fromHex("#FF6A33"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF4500") },
-			Button = { FillPrimary = makeGradient("#FF6A33", "#B32F00") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FF5500"),
-			Selection = Color3.fromHex("#FF5500"),
-			SelectionFocused = Color3.fromHex("#FF7733"),
-			SelectionStroke = Color3.fromHex("#FF7733"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF5500") },
-			Button = { FillPrimary = makeGradient("#FF7733", "#C23F00") },
-		},
-	},
-
-	RoyalBlue = {
-		_id = "RoyalBlue",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#4169E1"),
-			Selection = Color3.fromHex("#4169E1"),
-			SelectionFocused = Color3.fromHex("#6888EA"),
-			SelectionStroke = Color3.fromHex("#6888EA"),
-			Toggle = { SwitchOn = Color3.fromHex("#4169E1") },
-			Button = { FillPrimary = makeGradient("#6888EA", "#2447B3") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#3157D5"),
-			Selection = Color3.fromHex("#3157D5"),
-			SelectionFocused = Color3.fromHex("#5B78DF"),
-			SelectionStroke = Color3.fromHex("#5B78DF"),
-			Toggle = { SwitchOn = Color3.fromHex("#3157D5") },
-			Button = { FillPrimary = makeGradient("#5B78DF", "#203DA3") },
-		},
-	},
-
-	Obsidian = {
-		_id = "Obsidian",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#2B2B2B"),
-			Selection = Color3.fromHex("#2B2B2B"),
-			SelectionFocused = Color3.fromHex("#4A4A4A"),
-			SelectionStroke = Color3.fromHex("#4A4A4A"),
-			Toggle = { SwitchOn = Color3.fromHex("#2B2B2B") },
-			Button = { FillPrimary = makeGradient("#4A4A4A", "#111111") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#444444"),
-			Selection = Color3.fromHex("#444444"),
-			SelectionFocused = Color3.fromHex("#666666"),
-			SelectionStroke = Color3.fromHex("#666666"),
-			Toggle = { SwitchOn = Color3.fromHex("#444444") },
-			Button = { FillPrimary = makeGradient("#666666", "#222222") },
-		},
-	},
-
-	Diamond = {
-		_id = "Diamond",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#B9F2FF"),
-			Selection = Color3.fromHex("#B9F2FF"),
-			SelectionFocused = Color3.fromHex("#D5F8FF"),
-			SelectionStroke = Color3.fromHex("#D5F8FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#B9F2FF") },
-			Button = { FillPrimary = makeGradient("#D5F8FF", "#7CC9D8") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#A8EFFF"),
-			Selection = Color3.fromHex("#A8EFFF"),
-			SelectionFocused = Color3.fromHex("#C8F6FF"),
-			SelectionStroke = Color3.fromHex("#C8F6FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#A8EFFF") },
-			Button = { FillPrimary = makeGradient("#C8F6FF", "#73C4D4") },
-		},
-	},
-
-		Discord = {
+	Discord = {
 		_id = "Discord",
+
 		Dark = {
 			SwitchAccent = Color3.fromHex("#5865F2"),
 			Selection = Color3.fromHex("#5865F2"),
 			SelectionFocused = Color3.fromHex("#7983F5"),
 			SelectionStroke = Color3.fromHex("#7983F5"),
-			Toggle = { SwitchOn = Color3.fromHex("#5865F2") },
-			Button = { FillPrimary = makeGradient("#7983F5", "#3947D6") },
+
+			Toggle = {
+				SwitchOn = Color3.fromHex("#5865F2"),
+			},
+
+			Button = {
+				FillPrimary = makeGradient("#7983F5", "#3947D6"),
+			},
 		},
+
 		Light = {
 			SwitchAccent = Color3.fromHex("#5865F2"),
 			Selection = Color3.fromHex("#5865F2"),
 			SelectionFocused = Color3.fromHex("#7983F5"),
 			SelectionStroke = Color3.fromHex("#7983F5"),
-			Toggle = { SwitchOn = Color3.fromHex("#5865F2") },
-			Button = { FillPrimary = makeGradient("#7983F5", "#3947D6") },
-		},
-	},
 
-	Spotify = {
-		_id = "Spotify",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#1DB954"),
-			Selection = Color3.fromHex("#1DB954"),
-			SelectionFocused = Color3.fromHex("#43C96F"),
-			SelectionStroke = Color3.fromHex("#43C96F"),
-			Toggle = { SwitchOn = Color3.fromHex("#1DB954") },
-			Button = { FillPrimary = makeGradient("#43C96F", "#15803D") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#1DB954"),
-			Selection = Color3.fromHex("#1DB954"),
-			SelectionFocused = Color3.fromHex("#43C96F"),
-			SelectionStroke = Color3.fromHex("#43C96F"),
-			Toggle = { SwitchOn = Color3.fromHex("#1DB954") },
-			Button = { FillPrimary = makeGradient("#43C96F", "#15803D") },
-		},
-	},
-
-	YouTube = {
-		_id = "YouTube",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF0000"),
-			Selection = Color3.fromHex("#FF0000"),
-			SelectionFocused = Color3.fromHex("#FF4D4D"),
-			SelectionStroke = Color3.fromHex("#FF4D4D"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF0000") },
-			Button = { FillPrimary = makeGradient("#FF4D4D", "#B30000") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FF0000"),
-			Selection = Color3.fromHex("#FF0000"),
-			SelectionFocused = Color3.fromHex("#FF4D4D"),
-			SelectionStroke = Color3.fromHex("#FF4D4D"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF0000") },
-			Button = { FillPrimary = makeGradient("#FF4D4D", "#B30000") },
-		},
-	},
-
-	Valorant = {
-		_id = "Valorant",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#FF4655"),
-			Selection = Color3.fromHex("#FF4655"),
-			SelectionFocused = Color3.fromHex("#FF6B77"),
-			SelectionStroke = Color3.fromHex("#FF6B77"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF4655") },
-			Button = { FillPrimary = makeGradient("#FF6B77", "#D62839") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#FF4655"),
-			Selection = Color3.fromHex("#FF4655"),
-			SelectionFocused = Color3.fromHex("#FF6B77"),
-			SelectionStroke = Color3.fromHex("#FF6B77"),
-			Toggle = { SwitchOn = Color3.fromHex("#FF4655") },
-			Button = { FillPrimary = makeGradient("#FF6B77", "#D62839") },
-		},
-	},
-
-	Roblox = {
-		_id = "Roblox",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#E2231A"),
-			Selection = Color3.fromHex("#E2231A"),
-			SelectionFocused = Color3.fromHex("#EC4D46"),
-			SelectionStroke = Color3.fromHex("#EC4D46"),
-			Toggle = { SwitchOn = Color3.fromHex("#E2231A") },
-			Button = { FillPrimary = makeGradient("#EC4D46", "#A11611") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#E2231A"),
-			Selection = Color3.fromHex("#E2231A"),
-			SelectionFocused = Color3.fromHex("#EC4D46"),
-			SelectionStroke = Color3.fromHex("#EC4D46"),
-			Toggle = { SwitchOn = Color3.fromHex("#E2231A") },
-			Button = { FillPrimary = makeGradient("#EC4D46", "#A11611") },
-		},
-	},
-
-	Galaxy = {
-		_id = "Galaxy",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#7F5AF0"),
-			Selection = Color3.fromHex("#7F5AF0"),
-			SelectionFocused = Color3.fromHex("#9B7AF5"),
-			SelectionStroke = Color3.fromHex("#9B7AF5"),
-			Toggle = { SwitchOn = Color3.fromHex("#7F5AF0") },
-			Button = {
-				FillPrimary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(127,90,240)),
-					ColorSequenceKeypoint.new(0.5, Color3.fromRGB(44,182,255)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(255,0,200)),
-				}),
+			Toggle = {
+				SwitchOn = Color3.fromHex("#5865F2"),
 			},
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#7F5AF0"),
-			Selection = Color3.fromHex("#7F5AF0"),
-			SelectionFocused = Color3.fromHex("#9B7AF5"),
-			SelectionStroke = Color3.fromHex("#9B7AF5"),
-			Toggle = { SwitchOn = Color3.fromHex("#7F5AF0") },
-			Button = {
-				FillPrimary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(127,90,240)),
-					ColorSequenceKeypoint.new(0.5, Color3.fromRGB(44,182,255)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(255,0,200)),
-				}),
-			},
-		},
-	},
 
-	Matrix = {
-		_id = "Matrix",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#00FF41"),
-			Selection = Color3.fromHex("#00FF41"),
-			SelectionFocused = Color3.fromHex("#4DFF74"),
-			SelectionStroke = Color3.fromHex("#4DFF74"),
-			Toggle = { SwitchOn = Color3.fromHex("#00FF41") },
-			Button = { FillPrimary = makeGradient("#4DFF74", "#009929") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#00E63A"),
-			Selection = Color3.fromHex("#00E63A"),
-			SelectionFocused = Color3.fromHex("#40F06A"),
-			SelectionStroke = Color3.fromHex("#40F06A"),
-			Toggle = { SwitchOn = Color3.fromHex("#00E63A") },
-			Button = { FillPrimary = makeGradient("#40F06A", "#008522") },
+			Button = {
+				FillPrimary = makeGradient("#7983F5", "#3947D6"),
+			},
 		},
 	},
 
 	ShadowMonarch = {
 		_id = "ShadowMonarch",
+
 		Dark = {
 			SwitchAccent = Color3.fromHex("#6D28D9"),
 			Selection = Color3.fromHex("#6D28D9"),
 			SelectionFocused = Color3.fromHex("#8B5CF6"),
 			SelectionStroke = Color3.fromHex("#8B5CF6"),
-			Toggle = { SwitchOn = Color3.fromHex("#6D28D9") },
+
+			Toggle = {
+				SwitchOn = Color3.fromHex("#6D28D9"),
+			},
+
 			Button = {
 				FillPrimary = ColorSequence.new({
 					ColorSequenceKeypoint.new(0, Color3.fromRGB(109,40,217)),
@@ -12194,12 +11451,17 @@ Blue = {
 				}),
 			},
 		},
+
 		Light = {
 			SwitchAccent = Color3.fromHex("#7C3AED"),
 			Selection = Color3.fromHex("#7C3AED"),
 			SelectionFocused = Color3.fromHex("#9F67FF"),
 			SelectionStroke = Color3.fromHex("#9F67FF"),
-			Toggle = { SwitchOn = Color3.fromHex("#7C3AED") },
+
+			Toggle = {
+				SwitchOn = Color3.fromHex("#7C3AED"),
+			},
+
 			Button = {
 				FillPrimary = ColorSequence.new({
 					ColorSequenceKeypoint.new(0, Color3.fromRGB(124,58,237)),
@@ -12208,28 +11470,8 @@ Blue = {
 			},
 		},
 	},
-
-	TitanGreen = {
-		_id = "TitanGreen",
-		Dark = {
-			SwitchAccent = Color3.fromHex("#3FB950"),
-			Selection = Color3.fromHex("#3FB950"),
-			SelectionFocused = Color3.fromHex("#63D471"),
-			SelectionStroke = Color3.fromHex("#63D471"),
-			Toggle = { SwitchOn = Color3.fromHex("#3FB950") },
-			Button = { FillPrimary = makeGradient("#63D471", "#236B2D") },
-		},
-		Light = {
-			SwitchAccent = Color3.fromHex("#2EA043"),
-			Selection = Color3.fromHex("#2EA043"),
-			SelectionFocused = Color3.fromHex("#57BD68"),
-			SelectionStroke = Color3.fromHex("#57BD68"),
-			Toggle = { SwitchOn = Color3.fromHex("#2EA043") },
-			Button = { FillPrimary = makeGradient("#57BD68", "#1D6B2C") },
-		},
-	},
-
 }
+
 end function __DIST.O():typeof(__modImpl())local v=__DIST.cache.O if not v then v={c=__modImpl()}__DIST.cache.O=v end return v.c end end end--// Imports
 
 local utility = __DIST.a()
