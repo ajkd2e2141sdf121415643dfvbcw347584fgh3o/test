@@ -1,4 +1,4 @@
-print(22)
+print("SUS")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -11627,15 +11627,13 @@ end
 local function parseAccent(theme, overrides)
     for key, override in pairs(overrides) do
         local themeObj = theme[key]
-
+		        print("parseAccent key:", key, "themeObj type:", type(themeObj), "has Connect:", themeObj and themeObj.Connect ~= nil)
         if themeObj then
-            if type(themeObj) == "table"
-            and themeObj.Connect then
+            if type(themeObj) == "table" and themeObj.Connect then
 
                 themeObj.Value = override
 
-            elseif type(themeObj) == "table"
-            and type(override) == "table" then
+            elseif type(themeObj) == "table" and type(override) == "table" then
 
                 parseAccent(themeObj, override)
 
