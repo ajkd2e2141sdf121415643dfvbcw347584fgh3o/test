@@ -1,4 +1,4 @@
-print(123)
+print(22)
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -11602,25 +11602,26 @@ local currentTween: Tween? = nil
 
 --// Functions
 local function deepCopy(original, identifier: string?)
-	local copy = {}
-	for key, value in pairs(original) do
-		local vType = typeof(value)
-		if vType == "table" then
-			if value.Value ~= nil and value.Connect and typeof(value.Connect) == "function" then
-				copy[key] = creator.Value(value.Value)
-			else
-				copy[key] = deepCopy(value)
-			end
-		else
-			copy[key] = value
-		end
-	end
+    local copy = {}
+    for key, value in pairs(original) do
+        local vType = typeof(value)
+        if vType == "table" then
+            if value.Value ~= nil and value.Connect and typeof(value.Connect) == "function" then
+                copy[key] = creator.Value(value.Value)
+            else
+                copy[key] = deepCopy(value)
+            end
+        else
+            copy[key] = value
+        end
+    end
 
-	if identifier and not original._id then
-		original._id = identifier
-	end
+    -- ✅ เซ็ต _id บน copy ไม่ใช่ original
+    if identifier then
+        copy._id = identifier
+    end
 
-	return copy
+    return copy
 end
 
 local function parseAccent(theme, overrides)
@@ -11674,7 +11675,7 @@ if not game:IsLoaded() then
 	local currentBaseTheme = initialTheme
 
 	properties.Theme = deepCopy(initialTheme)
-	properties.Accent = deepCopy(initialAccent)
+	properties.Accent = deepCopy(initialAccent, initialAccent._id) 	
 
 	updateThemes(properties.Theme, initialTheme, initialAccent)
 
