@@ -1,4 +1,4 @@
-print("อ้าว")
+print("111111")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -11469,8 +11469,8 @@ return {
 		},
 	},
 
-	AMOLED = {
-		_id = "AMOLED",
+	Blue = {
+		_id = "Blue",
 
 		Dark = {
 			Controls = {
