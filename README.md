@@ -1,4 +1,3 @@
-print("สุดท้าย")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -11330,8 +11329,8 @@ local function makeGradient(topHex, bottomHex)
 end
 
 return {
-	ShadowMonarch = {
-		_id = "ShadowMonarch",
+	Blue = {
+		_id = "Blue",
 
 		Dark = {
 			Controls = {
