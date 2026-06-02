@@ -1,3 +1,4 @@
+print("Kuy")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -11048,6 +11049,18 @@ end
 
 return components
 end function __DIST.K():typeof(__modImpl())local v=__DIST.cache.K if not v then v={c=__modImpl()}__DIST.cache.K=v end return v.c end end do local function __modImpl()--// Imports
+
+
+
+
+
+
+
+
+--[[
+จะสร้าง Theme เพิ่มจาก Dark และ Light เลยมั้ย 
+หรือจะสร้าง Accent ที่ปรับแต่งได้ทั้งหมดเหมือน Theme
+]]
 local creator = __DIST.d()
 
 --// References
@@ -11320,7 +11333,7 @@ return {
 end function __DIST.N():typeof(__modImpl())local v=__DIST.cache.N if not v then v={c=__modImpl()}__DIST.cache.N=v end return v.c end end do local function __modImpl()--// Publish
 -- Refined to match macOS Human Interface Guidelines (HIG)
 
-
+--// themes.lua (หรือ module หลัก)
 local function makeGradient(topHex, bottomHex)
 	return ColorSequence.new({
 		ColorSequenceKeypoint.new(0, Color3.fromHex(topHex)),
@@ -11329,89 +11342,190 @@ local function makeGradient(topHex, bottomHex)
 end
 
 return {
-	Blue = {
-		_id = "Blue",
+	-- ================== BASE THEMES ==================
+	Base = {
+		Dark = __DIST.L(),   -- ใช้โค้ด Dark เดิมของคุณ
+		Light = __DIST.M(),  -- ใช้โค้ด Light เดิมของคุณ
+	},
 
-		Dark = {
-			Controls = {
-				SwitchAccent = Color3.fromHex("#8B5CF6"),
-				Selection = Color3.fromHex("#8B5CF6"),
-				SelectionFocused = Color3.fromHex("#A78BFA"),
-				SelectionStroke = Color3.fromHex("#A78BFA"),
+	-- ================== ACCENTS ==================
+	Accents = {
+		Blue = __DIST.O().Blue, -- เก็บอันเดิมไว้ก่อน
+		
+		-- เพิ่มใหม่ที่นี่
+		Purple = {
+			_id = "Purple",
+			Dark = {
+				Controls = {
+					SwitchAccent = Color3.fromHex("#C026D3"),
+					Selection = Color3.fromHex("#C026D3"),
+					SelectionFocused = Color3.fromHex("#E879F9"),
+					SelectionStroke = Color3.fromHex("#D946EF"),
+					ViewBorder = Color3.fromHex("#C026D3"),
 
-				Background = Color3.fromHex("#090412"),
-				View = Color3.fromHex("#12091F"),
-				ViewBorder = Color3.fromHex("#8B5CF6"),
+					Background = Color3.fromHex("#0A0612"),
+					View = Color3.fromHex("#12091F"),
+					Sidebar = Color3.fromHex("#0F0A1A"),
+					Titlebar = Color3.fromHex("#1A0F2E"),
 
-				Sidebar = Color3.fromHex("#0F071A"),
-				Titlebar = Color3.fromHex("#170A28"),
+					Toggle = {
+						SwitchOn = Color3.fromHex("#D946EF"),
+						SwitchOff = Color3.fromHex("#2A1D45"),
+					},
 
-				Toggle = {
-					SwitchOn = Color3.fromHex("#8B5CF6"),
-					SwitchOff = Color3.fromHex("#2A1D45"),
+					Slider = {
+						Track = Color3.fromHex("#2A1D45"),
+						Thumb = Color3.fromHex("#D946EF"),
+					},
+
+					Button = {
+						FillPrimary = makeGradient("#E879F9", "#A21CAF"),
+					},
+
+					MenuButton = {
+						IndicatorBackground = Color3.fromHex("#2A1D45"),
+						MenuBackground = Color3.fromHex("#12091F"),
+					},
 				},
 
-				Slider = {
-					Track = Color3.fromHex("#2A1D45"),
-					Thumb = Color3.fromHex("#8B5CF6"),
-				},
-
-				Button = {
-					FillPrimary = makeGradient("#A78BFA", "#5B21B6"),
-				},
-
-				MenuButton = {
-					IndicatorBackground = Color3.fromHex("#2A1D45"),
-					MenuBackground = Color3.fromHex("#12091F"),
+				Text = {
+					PrimaryAccent = Color3.fromHex("#F472B6"),
+					Secondary = Color3.fromHex("#C4B5FD"),
+					Tertiary = Color3.fromHex("#D8B4FE"),
 				},
 			},
 
-			Text = {
-				Secondary = Color3.fromHex("#C4B5FD"),
-				Tertiary = Color3.fromHex("#A78BFA"),
+			Light = {
+				Controls = {
+					SwitchAccent = Color3.fromHex("#A855F7"),
+					Selection = Color3.fromHex("#A855F7"),
+					SelectionFocused = Color3.fromHex("#C084FC"),
+					SelectionStroke = Color3.fromHex("#C084FC"),
+					ViewBorder = Color3.fromHex("#E9D5FF"),
+
+					Background = Color3.fromHex("#FAF5FF"),
+					View = Color3.fromHex("#FFFFFF"),
+					Sidebar = Color3.fromHex("#F3E8FF"),
+					Titlebar = Color3.fromHex("#EDE4FF"),
+
+					Toggle = {
+						SwitchOn = Color3.fromHex("#A855F7"),
+						SwitchOff = Color3.fromHex("#E9D5FF"),
+					},
+
+					Slider = {
+						Track = Color3.fromHex("#E9D5FF"),
+						Thumb = Color3.fromHex("#A855F7"),
+					},
+
+					Button = {
+						FillPrimary = makeGradient("#D8B4FE", "#A855F7"),
+					},
+
+					MenuButton = {
+						IndicatorBackground = Color3.fromHex("#EDE4FF"),
+						MenuBackground = Color3.fromHex("#FFFFFF"),
+					},
+				},
+
+				Text = {
+					PrimaryAccent = Color3.fromHex("#C026D3"),
+					Secondary = Color3.fromHex("#7E22CE"),
+					Tertiary = Color3.fromHex("#A855F7"),
+				},
 			},
 		},
+		Teal = {
+			_id = "Teal",
+			Dark = {
+				Controls = {
+					SwitchAccent = Color3.fromHex("#14B8A6"),
+					Selection = Color3.fromHex("#14B8A6"),
+					SelectionFocused = Color3.fromHex("#5EEAD4"),
+					SelectionStroke = Color3.fromHex("#5EEAD4"),
+					ViewBorder = Color3.fromHex("#14B8A6"),
 
-		Light = {
-			Controls = {
-				SwitchAccent = Color3.fromHex("#7C3AED"),
-				Selection = Color3.fromHex("#7C3AED"),
-				SelectionFocused = Color3.fromHex("#9D6CFF"),
-				SelectionStroke = Color3.fromHex("#9D6CFF"),
+					Background = Color3.fromHex("#05120F"),
+					View = Color3.fromHex("#0A1F1C"),
+					Sidebar = Color3.fromHex("#08221E"),
+					Titlebar = Color3.fromHex("#0F2E2A"),
 
-				Background = Color3.fromHex("#FBF8FF"),
-				View = Color3.fromHex("#FFFFFF"),
-				ViewBorder = Color3.fromHex("#D8B4FE"),
-
-				Sidebar = Color3.fromHex("#F5F0FF"),
-				Titlebar = Color3.fromHex("#EDE4FF"),
-
-				Toggle = {
-					SwitchOn = Color3.fromHex("#7C3AED"),
-					SwitchOff = Color3.fromHex("#DDD6FE"),
+					Toggle = { SwitchOn = Color3.fromHex("#14B8A6"), SwitchOff = Color3.fromHex("#1E3A35") },
+					Slider = { Track = Color3.fromHex("#1E3A35"), Thumb = Color3.fromHex("#14B8A6") },
+					Button = { FillPrimary = makeGradient("#5EEAD4", "#0F766E") },
+					MenuButton = { IndicatorBackground = Color3.fromHex("#1E3A35"), MenuBackground = Color3.fromHex("#0A1F1C") },
 				},
-
-				Slider = {
-					Track = Color3.fromHex("#DDD6FE"),
-					Thumb = Color3.fromHex("#7C3AED"),
-				},
-
-				Button = {
-					FillPrimary = makeGradient("#B794F4", "#7C3AED"),
-				},
-
-				MenuButton = {
-					IndicatorBackground = Color3.fromHex("#EDE4FF"),
-					MenuBackground = Color3.fromHex("#FFFFFF"),
+				Text = {
+					PrimaryAccent = Color3.fromHex("#67E8CE"),
+					Secondary = Color3.fromHex("#99F6E4"),
+					Tertiary = Color3.fromHex("#5EEAD4"),
 				},
 			},
-
-			Text = {
-				Secondary = Color3.fromHex("#6D28D9"),
-				Tertiary = Color3.fromHex("#8B5CF6"),
+			Light = {
+				Controls = {
+					SwitchAccent = Color3.fromHex("#0F766E"),
+					Selection = Color3.fromHex("#0F766E"),
+					SelectionFocused = Color3.fromHex("#14B8A6"),
+					ViewBorder = Color3.fromHex("#99F6E4"),
+					Background = Color3.fromHex("#F0FFFB"),
+					View = Color3.fromHex("#FFFFFF"),
+					Sidebar = Color3.fromHex("#E6F8F3"),
+					Titlebar = Color3.fromHex("#D1F2EB"),
+					Toggle = { SwitchOn = Color3.fromHex("#0F766E"), SwitchOff = Color3.fromHex("#CCFBF1") },
+					Slider = { Track = Color3.fromHex("#CCFBF1"), Thumb = Color3.fromHex("#0F766E") },
+					Button = { FillPrimary = makeGradient("#5EEAD4", "#0F766E") },
+				},
+				Text = {
+					PrimaryAccent = Color3.fromHex("#0F766E"),
+					Secondary = Color3.fromHex("#115E59"),
+					Tertiary = Color3.fromHex("#14B8A6"),
+				},
 			},
 		},
-	}
+		Mono = {
+			_id = "Mono",
+			Dark = {
+				Controls = {
+					SwitchAccent = Color3.fromHex("#E5E5E5"),
+					Selection = Color3.fromHex("#E5E5E5"),
+					SelectionFocused = Color3.fromHex("#FFFFFF"),
+					ViewBorder = Color3.fromHex("#737373"),
+					Background = Color3.fromHex("#0A0A0A"),
+					View = Color3.fromHex("#121212"),
+					Sidebar = Color3.fromHex("#1A1A1A"),
+					Titlebar = Color3.fromHex("#1F1F1F"),
+				},
+				Text = {
+					PrimaryAccent = Color3.fromHex("#E5E5E5"),
+					Secondary = Color3.fromHex("#A3A3A3"),
+					Tertiary = Color3.fromHex("#737373"),
+				},
+			},
+			Light = {
+				Controls = {
+					SwitchAccent = Color3.fromHex("#171717"),
+					Selection = Color3.fromHex("#171717"),
+					ViewBorder = Color3.fromHex("#D4D4D4"),
+					Background = Color3.fromHex("#FAFAFA"),
+					View = Color3.fromHex("#FFFFFF"),
+				},
+				Text = {
+					PrimaryAccent = Color3.fromHex("#171717"),
+					Secondary = Color3.fromHex("#525252"),
+					Tertiary = Color3.fromHex("#737373"),
+				},
+			},
+		},
+	},
+
+	-- Helper Function
+	CreateAccent = function(name: string, darkConfig: table, lightConfig: table)
+		return {
+			_id = name,
+			Dark = darkConfig,
+			Light = lightConfig or darkConfig -- ถ้าไม่ใส่ Light จะใช้ Dark แทน
+		}
+	end
 }
 end function __DIST.O():typeof(__modImpl())local v=__DIST.cache.O if not v then v={c=__modImpl()}__DIST.cache.O=v end return v.c end end end--// Imports
 
@@ -11466,49 +11580,32 @@ local function deepCopy(original, identifier: string?)
     return copy
 end
 
-local function parseAccent(theme, overrides)
-    for key, override in pairs(overrides) do
-        local themeObj = theme[key]
-
-        if themeObj then
-
-            if type(themeObj) == "table"
-            and themeObj.Value ~= nil then
-
-                themeObj.Value = override
-
-            elseif type(themeObj) == "table"
-            and type(override) == "table" then
-
-                parseAccent(themeObj, override)
-
-            end
-
-        end
-    end
-end
-
-local function updateThemes(target, theme, accent)
-	local function deepUpdate(target, new)
-		for key, value in pairs(new) do
-			if type(value) == "table" and type(target[key]) == "table" and not value.Value then
-				deepUpdate(target[key], value)
-			elseif target[key] and value and value.Value ~= nil then
-				target[key].Value = value.Value
+local function deepMerge(target, source)
+	for key, value in pairs(source) do
+		if typeof(value) == "table" and typeof(target[key]) == "table" then
+			if target[key].Value then -- เป็น creator.Value
+				target[key].Value = value
+			else
+				deepMerge(target[key], value)
 			end
-		end
-	end
-	deepUpdate(target, theme)
-
-	if accent then
-		local accentTheme = accent[theme._id]
-
-		if accentTheme then
-			parseAccent(target, accentTheme)
+		elseif target[key] and target[key].Value then
+			target[key].Value = value
 		end
 	end
 end
 
+local function updateThemes(target, baseTheme, accent)
+	-- Reset ไปที่ Base Theme ก่อน
+	deepMerge(target, baseTheme)
+
+	-- ใส่ Accent ทับทับ
+	if accent then
+		local accentData = accent[target._id] or accent.Dark or accent.Light
+		if accentData then
+			deepMerge(target, accentData)
+		end
+	end
+end
 --// Initialize
 cascade.New = function(properties: AppProperties__DARKLUA_TYPE_q): App__DARKLUA_TYPE_r	
 if not game:IsLoaded() then
