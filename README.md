@@ -11328,185 +11328,246 @@ local function makeGradient(topHex, bottomHex)
 	})
 end
 
- return {
+ VectorHub = {
+	_id = "VectorHub",
 
-    VectorHub = {
-        _id = "VectorHub",
+	Dark = {
+		SwitchAccent = Color3.fromHex("#00E676"),
+		Selection = Color3.fromHex("#00E676"),
+		SelectionFocused = Color3.fromHex("#4DFF9E"),
+		SelectionStroke = Color3.fromHex("#4DFF9E"),
 
-        Dark = {
-            SwitchAccent = Color3.fromHex("#00E676"),
-            Selection = Color3.fromHex("#00E676"),
-            SelectionFocused = Color3.fromHex("#4DFF9E"),
-            SelectionStroke = Color3.fromHex("#4DFF9E"),
+		Text = {
+			Secondary = Color3.fromHex("#7CFFB2"),
+			Tertiary = Color3.fromHex("#4DFF9E"),
+		},
 
-            Text = {
-                Secondary = Color3.fromHex("#7CFFB2"),
-                Tertiary = Color3.fromHex("#4DD98A"),
-            },
+		Background = Color3.fromHex("#07140B"),
+		View = Color3.fromHex("#0D1E12"),
+		ViewBorder = Color3.fromHex("#00E676"),
 
-            Background = Color3.fromHex("#07140B"),
-            View = Color3.fromHex("#0C1F12"),
-            ViewBorder = Color3.fromHex("#00E676"),
+		Sidebar = Color3.fromHex("#081A0F"),
+		Titlebar = Color3.fromHex("#0D2415"),
 
-            Sidebar = Color3.fromHex("#081A0F"),
-            Titlebar = Color3.fromHex("#0D2415"),
+		Toggle = {
+			SwitchOn = Color3.fromHex("#00E676"),
+			SwitchOff = Color3.fromHex("#1A3323"),
+		},
 
-            Toggle = {
-                SwitchOn = Color3.fromHex("#00E676"),
-                SwitchOff = Color3.fromHex("#1A3323"),
-                Knob = Color3.fromHex("#FFFFFF"),
-            },
+		Slider = {
+			Track = Color3.fromHex("#163822"),
+			Thumb = Color3.fromHex("#00E676"),
+		},
 
-            Slider = {
-                Track = Color3.fromHex("#163822"),
-                Thumb = Color3.fromHex("#00E676"),
-            },
+		Button = {
+			FillPrimary = makeGradient("#4DFF9E", "#00B85C"),
+		},
 
-            Button = {
-                FillPrimary = makeGradient("#4DFF9E", "#00B85C"),
-                FillSecondary = makeGradient("#143321", "#0B2215"),
-            },
+		MenuButton = {
+			IndicatorBackground = Color3.fromHex("#163822"),
+			MenuBackground = Color3.fromHex("#081A0F"),
+		},
+	},
 
-            MenuButton = {
-                IndicatorBackground = Color3.fromHex("#163822"),
-                MenuBackground = Color3.fromHex("#0B1A11"),
-            },
-        },
-    },
+	Light = {
+		SwitchAccent = Color3.fromHex("#00C853"),
+		Selection = Color3.fromHex("#00C853"),
+		SelectionFocused = Color3.fromHex("#34D878"),
+		SelectionStroke = Color3.fromHex("#34D878"),
 
-    ShadowMonarch = {
-        _id = "ShadowMonarch",
+		Text = {
+			Secondary = Color3.fromHex("#146C2E"),
+			Tertiary = Color3.fromHex("#1E8E3E"),
+		},
 
-        Dark = {
-            SwitchAccent = Color3.fromHex("#8B5CF6"),
-            Selection = Color3.fromHex("#8B5CF6"),
-            SelectionFocused = Color3.fromHex("#A78BFA"),
-            SelectionStroke = Color3.fromHex("#A78BFA"),
+		Background = Color3.fromHex("#F4FFF7"),
+		View = Color3.fromHex("#FFFFFF"),
+		ViewBorder = Color3.fromHex("#A7F3C0"),
 
-            Text = {
-                Secondary = Color3.fromHex("#C4B5FD"),
-                Tertiary = Color3.fromHex("#A78BFA"),
-            },
+		Sidebar = Color3.fromHex("#ECFFF2"),
+		Titlebar = Color3.fromHex("#DDFBE8"),
 
-            Background = Color3.fromHex("#090412"),
-            View = Color3.fromHex("#12091F"),
-            ViewBorder = Color3.fromHex("#8B5CF6"),
+		Toggle = {
+			SwitchOn = Color3.fromHex("#00C853"),
+			SwitchOff = Color3.fromHex("#C8E6D1"),
+		},
 
-            Sidebar = Color3.fromHex("#0F071A"),
-            Titlebar = Color3.fromHex("#170A28"),
+		Slider = {
+			Track = Color3.fromHex("#C8E6D1"),
+			Thumb = Color3.fromHex("#00C853"),
+		},
 
-            Toggle = {
-                SwitchOn = Color3.fromHex("#8B5CF6"),
-                SwitchOff = Color3.fromHex("#2A1D45"),
-                Knob = Color3.fromHex("#FFFFFF"),
-            },
+		Button = {
+			FillPrimary = makeGradient("#4DFF9E", "#00C853"),
+		},
 
-            Slider = {
-                Track = Color3.fromHex("#2A1D45"),
-                Thumb = Color3.fromHex("#8B5CF6"),
-            },
+		MenuButton = {
+			IndicatorBackground = Color3.fromHex("#DDFBE8"),
+			MenuBackground = Color3.fromHex("#FFFFFF"),
+		},
+	},
+},
 
-            Button = {
-                FillPrimary = makeGradient("#A78BFA", "#5B21B6"),
-                FillSecondary = makeGradient("#231236", "#12091F"),
-            },
+ShadowMonarch = {
+	_id = "ShadowMonarch",
 
-            MenuButton = {
-                IndicatorBackground = Color3.fromHex("#2A1D45"),
-                MenuBackground = Color3.fromHex("#12091F"),
-            },
-        },
-    },
+	Dark = {
+		SwitchAccent = Color3.fromHex("#8B5CF6"),
+		Selection = Color3.fromHex("#8B5CF6"),
+		SelectionFocused = Color3.fromHex("#A78BFA"),
+		SelectionStroke = Color3.fromHex("#A78BFA"),
 
-    Matrix = {
-        _id = "Matrix",
+		Text = {
+			Secondary = Color3.fromHex("#C4B5FD"),
+			Tertiary = Color3.fromHex("#A78BFA"),
+		},
 
-        Dark = {
-            SwitchAccent = Color3.fromHex("#00FF41"),
-            Selection = Color3.fromHex("#00FF41"),
-            SelectionFocused = Color3.fromHex("#4DFF74"),
-            SelectionStroke = Color3.fromHex("#4DFF74"),
+		Background = Color3.fromHex("#090412"),
+		View = Color3.fromHex("#12091F"),
+		ViewBorder = Color3.fromHex("#8B5CF6"),
 
-            Text = {
-                Primary = Color3.fromHex("#C6FFD7"),
-                Secondary = Color3.fromHex("#7AFF9F"),
-                Tertiary = Color3.fromHex("#4DFF74"),
-            },
+		Sidebar = Color3.fromHex("#0F071A"),
+		Titlebar = Color3.fromHex("#170A28"),
 
-            Background = Color3.fromHex("#020402"),
-            View = Color3.fromHex("#050805"),
-            ViewBorder = Color3.fromHex("#00FF41"),
+		Toggle = {
+			SwitchOn = Color3.fromHex("#8B5CF6"),
+			SwitchOff = Color3.fromHex("#2A1D45"),
+		},
 
-            Sidebar = Color3.fromHex("#030603"),
-            Titlebar = Color3.fromHex("#081108"),
+		Slider = {
+			Track = Color3.fromHex("#2A1D45"),
+			Thumb = Color3.fromHex("#8B5CF6"),
+		},
 
-            Toggle = {
-                SwitchOn = Color3.fromHex("#00FF41"),
-                SwitchOff = Color3.fromHex("#113311"),
-                Knob = Color3.fromHex("#FFFFFF"),
-            },
+		Button = {
+			FillPrimary = makeGradient("#A78BFA", "#5B21B6"),
+		},
 
-            Slider = {
-                Track = Color3.fromHex("#113311"),
-                Thumb = Color3.fromHex("#00FF41"),
-            },
+		MenuButton = {
+			IndicatorBackground = Color3.fromHex("#2A1D45"),
+			MenuBackground = Color3.fromHex("#12091F"),
+		},
+	},
 
-            Button = {
-                FillPrimary = makeGradient("#4DFF74", "#009929"),
-                FillSecondary = makeGradient("#113311", "#081108"),
-            },
+	Light = {
+		SwitchAccent = Color3.fromHex("#7C3AED"),
+		Selection = Color3.fromHex("#7C3AED"),
+		SelectionFocused = Color3.fromHex("#9D6CFF"),
+		SelectionStroke = Color3.fromHex("#9D6CFF"),
 
-            MenuButton = {
-                IndicatorBackground = Color3.fromHex("#113311"),
-                MenuBackground = Color3.fromHex("#050805"),
-            },
-        },
-    },
+		Text = {
+			Secondary = Color3.fromHex("#6D28D9"),
+			Tertiary = Color3.fromHex("#8B5CF6"),
+		},
 
-    BloodMoon = {
-        _id = "BloodMoon",
+		Background = Color3.fromHex("#FBF8FF"),
+		View = Color3.fromHex("#FFFFFF"),
+		ViewBorder = Color3.fromHex("#D8B4FE"),
 
-        Dark = {
-            SwitchAccent = Color3.fromHex("#FF1744"),
-            Selection = Color3.fromHex("#FF1744"),
-            SelectionFocused = Color3.fromHex("#FF5C77"),
-            SelectionStroke = Color3.fromHex("#FF5C77"),
+		Sidebar = Color3.fromHex("#F5F0FF"),
+		Titlebar = Color3.fromHex("#EDE4FF"),
 
-            Text = {
-                Secondary = Color3.fromHex("#FF8A9E"),
-                Tertiary = Color3.fromHex("#FF5C77"),
-            },
+		Toggle = {
+			SwitchOn = Color3.fromHex("#7C3AED"),
+			SwitchOff = Color3.fromHex("#DDD6FE"),
+		},
 
-            Background = Color3.fromHex("#120203"),
-            View = Color3.fromHex("#1A0608"),
-            ViewBorder = Color3.fromHex("#FF1744"),
+		Slider = {
+			Track = Color3.fromHex("#DDD6FE"),
+			Thumb = Color3.fromHex("#7C3AED"),
+		},
 
-            Sidebar = Color3.fromHex("#140405"),
-            Titlebar = Color3.fromHex("#200709"),
+		Button = {
+			FillPrimary = makeGradient("#B794F4", "#7C3AED"),
+		},
 
-            Toggle = {
-                SwitchOn = Color3.fromHex("#FF1744"),
-                SwitchOff = Color3.fromHex("#3A1118"),
-                Knob = Color3.fromHex("#FFFFFF"),
-            },
+		MenuButton = {
+			IndicatorBackground = Color3.fromHex("#EDE4FF"),
+			MenuBackground = Color3.fromHex("#FFFFFF"),
+		},
+	},
+},
 
-            Slider = {
-                Track = Color3.fromHex("#3A1118"),
-                Thumb = Color3.fromHex("#FF1744"),
-            },
+Matrix = {
+	_id = "Matrix",
 
-            Button = {
-                FillPrimary = makeGradient("#FF5C77", "#B00020"),
-                FillSecondary = makeGradient("#2A0B10", "#160507"),
-            },
+	Dark = {
+		SwitchAccent = Color3.fromHex("#00FF41"),
+		Selection = Color3.fromHex("#00FF41"),
+		SelectionFocused = Color3.fromHex("#4DFF74"),
+		SelectionStroke = Color3.fromHex("#4DFF74"),
 
-            MenuButton = {
-                IndicatorBackground = Color3.fromHex("#3A1118"),
-                MenuBackground = Color3.fromHex("#160507"),
-            },
-        },
-    },
-}
+		Text = {
+			Primary = Color3.fromHex("#C6FFD7"),
+			Secondary = Color3.fromHex("#7AFF9F"),
+			Tertiary = Color3.fromHex("#4DFF74"),
+		},
+
+		Background = Color3.fromHex("#020402"),
+		View = Color3.fromHex("#050805"),
+		ViewBorder = Color3.fromHex("#00FF41"),
+
+		Sidebar = Color3.fromHex("#030603"),
+		Titlebar = Color3.fromHex("#081108"),
+
+		Toggle = {
+			SwitchOn = Color3.fromHex("#00FF41"),
+			SwitchOff = Color3.fromHex("#113311"),
+		},
+
+		Slider = {
+			Track = Color3.fromHex("#113311"),
+			Thumb = Color3.fromHex("#00FF41"),
+		},
+
+		Button = {
+			FillPrimary = makeGradient("#4DFF74", "#009929"),
+		},
+
+		MenuButton = {
+			IndicatorBackground = Color3.fromHex("#113311"),
+			MenuBackground = Color3.fromHex("#050805"),
+		},
+	},
+
+	Light = {
+		SwitchAccent = Color3.fromHex("#00CC33"),
+		Selection = Color3.fromHex("#00CC33"),
+		SelectionFocused = Color3.fromHex("#39E75F"),
+		SelectionStroke = Color3.fromHex("#39E75F"),
+
+		Text = {
+			Secondary = Color3.fromHex("#0A7A24"),
+			Tertiary = Color3.fromHex("#00A82A"),
+		},
+
+		Background = Color3.fromHex("#F8FFF8"),
+		View = Color3.fromHex("#FFFFFF"),
+		ViewBorder = Color3.fromHex("#A5F3A5"),
+
+		Sidebar = Color3.fromHex("#F0FFF0"),
+		Titlebar = Color3.fromHex("#DFFFE0"),
+
+		Toggle = {
+			SwitchOn = Color3.fromHex("#00CC33"),
+			SwitchOff = Color3.fromHex("#CFEFD0"),
+		},
+
+		Slider = {
+			Track = Color3.fromHex("#CFEFD0"),
+			Thumb = Color3.fromHex("#00CC33"),
+		},
+
+		Button = {
+			FillPrimary = makeGradient("#39E75F", "#00CC33"),
+		},
+
+		MenuButton = {
+			IndicatorBackground = Color3.fromHex("#DFFFE0"),
+			MenuBackground = Color3.fromHex("#FFFFFF"),
+		},
+	},
+},
 
 end function __DIST.O():typeof(__modImpl())local v=__DIST.cache.O if not v then v={c=__modImpl()}__DIST.cache.O=v end return v.c end end end--// Imports
 
