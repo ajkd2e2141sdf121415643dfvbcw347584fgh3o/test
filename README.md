@@ -11328,148 +11328,184 @@ local function makeGradient(topHex, bottomHex)
 	})
 end
 
-return {
-	Blue = {
-		_id = "Blue",
+ return {
 
-		Dark = {
-			SwitchAccent = Color3.fromHex("#0A84FF"),
-			Selection = Color3.fromHex("#007AFF"),
-			SelectionFocused = Color3.fromHex("#3B9CFF"),
-			SelectionStroke = Color3.fromHex("#3B9CFF"),
+    VectorHub = {
+        _id = "VectorHub",
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#0A84FF"),
-			},
+        Dark = {
+            SwitchAccent = Color3.fromHex("#00E676"),
+            Selection = Color3.fromHex("#00E676"),
+            SelectionFocused = Color3.fromHex("#4DFF9E"),
+            SelectionStroke = Color3.fromHex("#4DFF9E"),
 
-			Button = {
-				FillPrimary = makeGradient("#529CFF", "#007AFF"),
-			},
-		},
+            Text = {
+                Secondary = Color3.fromHex("#7CFFB2"),
+                Tertiary = Color3.fromHex("#4DD98A"),
+            },
 
-		Light = {
-			SwitchAccent = Color3.fromHex("#007AFF"),
-			Selection = Color3.fromHex("#007AFF"),
-			SelectionFocused = Color3.fromHex("#3395FF"),
-			SelectionStroke = Color3.fromHex("#3395FF"),
+            Background = Color3.fromHex("#07140B"),
+            View = Color3.fromHex("#0C1F12"),
+            ViewBorder = Color3.fromHex("#00E676"),
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#007AFF"),
-			},
+            Sidebar = Color3.fromHex("#081A0F"),
+            Titlebar = Color3.fromHex("#0D2415"),
 
-			Button = {
-				FillPrimary = makeGradient("#46A0FF", "#007AFF"),
-			},
-		},
-	},
+            Toggle = {
+                SwitchOn = Color3.fromHex("#00E676"),
+                SwitchOff = Color3.fromHex("#1A3323"),
+                Knob = Color3.fromHex("#FFFFFF"),
+            },
 
-	Purple = {
-		_id = "Purple",
+            Slider = {
+                Track = Color3.fromHex("#163822"),
+                Thumb = Color3.fromHex("#00E676"),
+            },
 
-		Dark = {
-			SwitchAccent = Color3.fromHex("#BF5AF6"),
-			Selection = Color3.fromHex("#BF5AF6"),
-			SelectionFocused = Color3.fromHex("#CB7AF7"),
-			SelectionStroke = Color3.fromHex("#CB7AF7"),
+            Button = {
+                FillPrimary = makeGradient("#4DFF9E", "#00B85C"),
+                FillSecondary = makeGradient("#143321", "#0B2215"),
+            },
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#BF5AF6"),
-			},
+            MenuButton = {
+                IndicatorBackground = Color3.fromHex("#163822"),
+                MenuBackground = Color3.fromHex("#0B1A11"),
+            },
+        },
+    },
 
-			Button = {
-				FillPrimary = makeGradient("#CB7AF7", "#9A3BD6"),
-			},
-		},
+    ShadowMonarch = {
+        _id = "ShadowMonarch",
 
-		Light = {
-			SwitchAccent = Color3.fromHex("#AF52DE"),
-			Selection = Color3.fromHex("#AF52DE"),
-			SelectionFocused = Color3.fromHex("#BF74E4"),
-			SelectionStroke = Color3.fromHex("#BF74E4"),
+        Dark = {
+            SwitchAccent = Color3.fromHex("#8B5CF6"),
+            Selection = Color3.fromHex("#8B5CF6"),
+            SelectionFocused = Color3.fromHex("#A78BFA"),
+            SelectionStroke = Color3.fromHex("#A78BFA"),
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#AF52DE"),
-			},
+            Text = {
+                Secondary = Color3.fromHex("#C4B5FD"),
+                Tertiary = Color3.fromHex("#A78BFA"),
+            },
 
-			Button = {
-				FillPrimary = makeGradient("#BF74E4", "#8B30BF"),
-			},
-		},
-	},
+            Background = Color3.fromHex("#090412"),
+            View = Color3.fromHex("#12091F"),
+            ViewBorder = Color3.fromHex("#8B5CF6"),
 
-	Discord = {
-		_id = "Discord",
+            Sidebar = Color3.fromHex("#0F071A"),
+            Titlebar = Color3.fromHex("#170A28"),
 
-		Dark = {
-			SwitchAccent = Color3.fromHex("#5865F2"),
-			Selection = Color3.fromHex("#5865F2"),
-			SelectionFocused = Color3.fromHex("#7983F5"),
-			SelectionStroke = Color3.fromHex("#7983F5"),
+            Toggle = {
+                SwitchOn = Color3.fromHex("#8B5CF6"),
+                SwitchOff = Color3.fromHex("#2A1D45"),
+                Knob = Color3.fromHex("#FFFFFF"),
+            },
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#5865F2"),
-			},
+            Slider = {
+                Track = Color3.fromHex("#2A1D45"),
+                Thumb = Color3.fromHex("#8B5CF6"),
+            },
 
-			Button = {
-				FillPrimary = makeGradient("#7983F5", "#3947D6"),
-			},
-		},
+            Button = {
+                FillPrimary = makeGradient("#A78BFA", "#5B21B6"),
+                FillSecondary = makeGradient("#231236", "#12091F"),
+            },
 
-		Light = {
-			SwitchAccent = Color3.fromHex("#5865F2"),
-			Selection = Color3.fromHex("#5865F2"),
-			SelectionFocused = Color3.fromHex("#7983F5"),
-			SelectionStroke = Color3.fromHex("#7983F5"),
+            MenuButton = {
+                IndicatorBackground = Color3.fromHex("#2A1D45"),
+                MenuBackground = Color3.fromHex("#12091F"),
+            },
+        },
+    },
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#5865F2"),
-			},
+    Matrix = {
+        _id = "Matrix",
 
-			Button = {
-				FillPrimary = makeGradient("#7983F5", "#3947D6"),
-			},
-		},
-	},
+        Dark = {
+            SwitchAccent = Color3.fromHex("#00FF41"),
+            Selection = Color3.fromHex("#00FF41"),
+            SelectionFocused = Color3.fromHex("#4DFF74"),
+            SelectionStroke = Color3.fromHex("#4DFF74"),
 
-	ShadowMonarch = {
-		_id = "ShadowMonarch",
+            Text = {
+                Primary = Color3.fromHex("#C6FFD7"),
+                Secondary = Color3.fromHex("#7AFF9F"),
+                Tertiary = Color3.fromHex("#4DFF74"),
+            },
 
-		Dark = {
-			SwitchAccent = Color3.fromHex("#6D28D9"),
-			Selection = Color3.fromHex("#6D28D9"),
-			SelectionFocused = Color3.fromHex("#8B5CF6"),
-			SelectionStroke = Color3.fromHex("#8B5CF6"),
+            Background = Color3.fromHex("#020402"),
+            View = Color3.fromHex("#050805"),
+            ViewBorder = Color3.fromHex("#00FF41"),
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#6D28D9"),
-			},
+            Sidebar = Color3.fromHex("#030603"),
+            Titlebar = Color3.fromHex("#081108"),
 
-			Button = {
-				FillPrimary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(109,40,217)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(30,10,60)),
-				}),
-			},
-		},
+            Toggle = {
+                SwitchOn = Color3.fromHex("#00FF41"),
+                SwitchOff = Color3.fromHex("#113311"),
+                Knob = Color3.fromHex("#FFFFFF"),
+            },
 
-		Light = {
-			SwitchAccent = Color3.fromHex("#7C3AED"),
-			Selection = Color3.fromHex("#7C3AED"),
-			SelectionFocused = Color3.fromHex("#9F67FF"),
-			SelectionStroke = Color3.fromHex("#9F67FF"),
+            Slider = {
+                Track = Color3.fromHex("#113311"),
+                Thumb = Color3.fromHex("#00FF41"),
+            },
 
-			Toggle = {
-				SwitchOn = Color3.fromHex("#7C3AED"),
-			},
+            Button = {
+                FillPrimary = makeGradient("#4DFF74", "#009929"),
+                FillSecondary = makeGradient("#113311", "#081108"),
+            },
 
-			Button = {
-				FillPrimary = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(124,58,237)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(55,20,120)),
-				}),
-			},
-		},
-	},
+            MenuButton = {
+                IndicatorBackground = Color3.fromHex("#113311"),
+                MenuBackground = Color3.fromHex("#050805"),
+            },
+        },
+    },
+
+    BloodMoon = {
+        _id = "BloodMoon",
+
+        Dark = {
+            SwitchAccent = Color3.fromHex("#FF1744"),
+            Selection = Color3.fromHex("#FF1744"),
+            SelectionFocused = Color3.fromHex("#FF5C77"),
+            SelectionStroke = Color3.fromHex("#FF5C77"),
+
+            Text = {
+                Secondary = Color3.fromHex("#FF8A9E"),
+                Tertiary = Color3.fromHex("#FF5C77"),
+            },
+
+            Background = Color3.fromHex("#120203"),
+            View = Color3.fromHex("#1A0608"),
+            ViewBorder = Color3.fromHex("#FF1744"),
+
+            Sidebar = Color3.fromHex("#140405"),
+            Titlebar = Color3.fromHex("#200709"),
+
+            Toggle = {
+                SwitchOn = Color3.fromHex("#FF1744"),
+                SwitchOff = Color3.fromHex("#3A1118"),
+                Knob = Color3.fromHex("#FFFFFF"),
+            },
+
+            Slider = {
+                Track = Color3.fromHex("#3A1118"),
+                Thumb = Color3.fromHex("#FF1744"),
+            },
+
+            Button = {
+                FillPrimary = makeGradient("#FF5C77", "#B00020"),
+                FillSecondary = makeGradient("#2A0B10", "#160507"),
+            },
+
+            MenuButton = {
+                IndicatorBackground = Color3.fromHex("#3A1118"),
+                MenuBackground = Color3.fromHex("#160507"),
+            },
+        },
+    },
 }
 
 end function __DIST.O():typeof(__modImpl())local v=__DIST.cache.O if not v then v={c=__modImpl()}__DIST.cache.O=v end return v.c end end end--// Imports
@@ -11525,30 +11561,23 @@ local function deepCopy(original, identifier: string?)
 end
 
 local function parseAccent(theme, overrides)
-	for key, override in pairs(overrides) do
-		local themeObj = theme[key]
+    for key, override in pairs(overrides) do
+        local themeObj = theme[key]
 
-		if not themeObj and type(theme) == "table" and type(theme.Controls) == "table" then
-			themeObj = theme.Controls[key]
-		end
+        if themeObj then
+            if type(themeObj) == "table"
+            and themeObj.Connect then
 
-		if not themeObj then
-			continue
-		end
+                themeObj.Value = override
 
-		if type(themeObj) == "table" and themeObj.Connect then
-			themeObj.Value = override
-		elseif
-			type(themeObj) == "table"
-			and themeObj[1]
-			and themeObj[1].Connect
-			and typeof(override) == "Color3"
-		then
-			themeObj[1].Value = override
-		elseif type(themeObj) == "table" and type(override) == "table" then
-			parseAccent(themeObj, override)
-		end
-	end
+            elseif type(themeObj) == "table"
+            and type(override) == "table" then
+
+                parseAccent(themeObj, override)
+
+            end
+        end
+    end
 end
 
 local function updateThemes(target, theme, accent)
